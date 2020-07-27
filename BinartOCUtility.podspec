@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'fallending' => 'fengzilijie@qq.com' }
-  s.source           = { :git => 'https://github.com/fallending/BinartOCUtility.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/fallending/BinartOCUtility-iOS.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '8.0'
@@ -34,7 +34,7 @@ Pod::Spec.new do |s|
   #   'BinartOCUtility' => ['BinartOCUtility/Assets/*.png']
   # }
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
+  s.public_header_files = 'BinartOCUtility/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
   # s.dependency 'AFNetworking', '~> 2.3'
 end
