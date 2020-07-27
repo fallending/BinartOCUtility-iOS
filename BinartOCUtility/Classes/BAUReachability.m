@@ -22,9 +22,7 @@ static BAUReachabilityStatus BAUReachabilityStatusFromFlags(SCNetworkReachabilit
 static void BAUReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void *info) {
     BAUReachability *self = ((__bridge BAUReachability *)info);
     if (self.notifyBlock) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.notifyBlock(self);
-        });
+        self.notifyBlock(self);
     }
 }
 
@@ -41,7 +39,7 @@ static void BAUReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkRe
     static dispatch_queue_t queue;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        queue = dispatch_queue_create("com.ibireme.yykit.reachability", DISPATCH_QUEUE_SERIAL);
+        queue = dispatch_queue_create("com.binart.utility.reachability", DISPATCH_QUEUE_SERIAL);
     });
     return queue;
 }

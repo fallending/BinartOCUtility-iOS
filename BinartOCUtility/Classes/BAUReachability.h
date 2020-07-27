@@ -24,7 +24,7 @@ typedef NS_ENUM(NSUInteger, BAUReachabilityWWANStatus) {
 @property (nonatomic, readonly) BAUReachabilityStatus status;
 @property (nonatomic, readonly) BAUReachabilityWWANStatus wwanStatus NS_AVAILABLE_IOS(7_0);
 @property (nonatomic, readonly, getter=isReachable) BOOL reachable;
-@property (nullable, nonatomic, copy) void (^notifyBlock)(BAUReachability *reachability); // Call on Main
+@property (nullable, nonatomic, copy) void (^notifyBlock)(BAUReachability *reachability); // Call on Global, not Main
 
 + (instancetype)reachability;
 + (nullable instancetype)reachabilityWithHostname:(NSString *)hostname;
