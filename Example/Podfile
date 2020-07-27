@@ -1,0 +1,14 @@
+use_frameworks!
+
+platform :ios, '8.0'
+
+target 'BinartOCUtility_Example' do
+  pod 'BinartOCUtility', :path => '../'
+
+  target 'BinartOCUtility_Tests' do
+    inherit! :search_paths
+
+    pod 'Specta'
+    pod 'Expecta'
+  end
+end
