@@ -7,6 +7,7 @@
 //
 
 #import "BAUAppDelegate.h"
+#import <BinartOCUtility/BAMacros.h>
 
 @implementation BAUAppDelegate
 

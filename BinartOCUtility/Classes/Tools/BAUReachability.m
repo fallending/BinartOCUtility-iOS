@@ -128,10 +128,6 @@ static void BAUReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkRe
     return self.status != BAUReachabilityStatusNone;
 }
 
-+ (instancetype)reachability {
-    return self.new;
-}
-
 + (instancetype)reachabilityForLocalWifi {
     struct sockaddr_in localWifiAddress;
     bzero(&localWifiAddress, sizeof(localWifiAddress));
@@ -157,6 +153,8 @@ static void BAUReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkRe
 - (void)setNotifyBlock:(void (^)(BAUReachability *reachability))notifyBlock {
     _notifyBlock = [notifyBlock copy];
     self.scheduled = (self.notifyBlock != nil);
+    
+    //
 }
 
 @end

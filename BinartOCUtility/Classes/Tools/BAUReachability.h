@@ -26,14 +26,8 @@ typedef NS_ENUM(NSUInteger, BAUReachabilityWWANStatus) {
 @property (nonatomic, readonly, getter=isReachable) BOOL reachable;
 @property (nullable, nonatomic, copy) void (^notifyBlock)(BAUReachability *reachability); // Call on Global, not Main
 
-+ (instancetype)reachability;
 + (nullable instancetype)reachabilityWithHostname:(NSString *)hostname;
 
-/**
- Create an object to check the reachability of a given IP address
- 
- @param hostAddress You may pass `struct sockaddr_in` for IPv4 address or `struct sockaddr_in6` for IPv6 address.
- */
 + (nullable instancetype)reachabilityWithAddress:(const struct sockaddr *)hostAddress;
 
 @end
