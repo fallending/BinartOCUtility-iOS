@@ -461,73 +461,38 @@ if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"3.1.1")) {
 #define PIXEL_48                        48.f
 #define PIXEL_56                        56.f
 
-#define margin_l    PIXEL_16
-#define margin_m    PIXEL_8
-#define margin_s    PIXEL_4
+#define APP_BUILD                   [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]
+#define APP_VERSION                 [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]
+#define APP_DISPLAY_NAME            [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]
+#define APP_BUNDLE_NAME             [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleNameKey]
+#define APP_BUNDLE_ID               [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleIdentifierKey]
 
+#define APP_DEVICE_NAME             [[UIDevice currentDevice] name]
+#define APP_DEVICE_MODEL            [[UIDevice currentDevice] model]
+#define APP_DEVIXE_SYSTEM_VERSION   [[UIDevice currentDevice] systemVersion]
 
-#define app_build                   [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]
-#define app_version                 [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]
-#define app_display_name            [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]
-#define app_bundle_name             [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleNameKey]
-#define app_bundle_id               [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleIdentifierKey]
-
-#define app_device_name             [[UIDevice currentDevice] name]
-#define app_device_model            [[UIDevice currentDevice] model]
-#define app_device_system_version   [[UIDevice currentDevice] systemVersion]
-
-#define app_window                  [[UIApplication sharedApplication].delegate window]
-#define app_window_is_landscape     UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)
-#define app_window_is_portrait      !app_window_is_landscape
-#define app_window_current_width    (app_window_is_landscape ? [UIScreen mainScreen].bounds.size.height : [UIScreen mainScreen].bounds.size.width)
-#define app_window_current_height   (app_window_is_landscape ? [UIScreen mainScreen].bounds.size.width : [UIScreen mainScreen].bounds.size.height)
-#define app_window_current_size     CGSizeMake(app_window_current_width, app_window_current_height)
-
-// 横竖屏
-#define is_landscape                app_window_is_landscape
-#define is_portrait                 app_window_is_portrait
+#define APP_WINDOW                  [[UIApplication sharedApplication].delegate window]
+#define APP_WINDOW_IS_LANDSCAPE     UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)
+#define APP_WINDOW_IS_PORTRAIT      !APP_WINDOW_IS_LANDSCAPE
+#define APP_WINDOW_CURRENT_WIDTH    (APP_WINDOW_IS_LANDSCAPE ? [UIScreen mainScreen].bounds.size.height : [UIScreen mainScreen].bounds.size.width)
+#define APP_WINDOW_CURRENT_HEIGHT   (APP_WINDOW_IS_LANDSCAPE ? [UIScreen mainScreen].bounds.size.width : [UIScreen mainScreen].bounds.size.height)
+#define APP_WINDOW_CURRENT_SIZE     CGSizeMake(APP_WINDOW_CURRENT_WIDTH, APP_WINDOW_CURRENT_HEIGHT)
 
 // 常用的沙盒目录
-#define path_of_app_home    NSHomeDirectory()
-#define path_of_temp        NSTemporaryDirectory()
-#define path_of_document    [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]
-#define path_of_library    [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0]
-#define path_of_cache       [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0]
+#define PATH_OF_APP_HOME    NSHomeDirectory()
+#define PATH_OF_TEMP        NSTemporaryDirectory()
+#define PATH_OF_DOCUMENT    [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]
+#define PATH_OF_LIBRARY     [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0]
+#define PATH_OF_CACHE       [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0]
 
 // 预设文件存储位置
-#define path_to_database    [path_of_cache stringByAppendingPathComponent:@"dbs"]
-#define path_to_filecache   [path_of_cache stringByAppendingPathComponent:@"files"]
-#define path_to_imagecache  [path_of_cache stringByAppendingPathComponent:@"images"]
+#define PATH_TO_DATABASE    [PATH_OF_CACHE stringByAppendingPathComponent:@"dbs"]
+#define PATH_TO_FILECACHE   [PATH_OF_CACHE stringByAppendingPathComponent:@"files"]
+#define PATH_TO_IMAGECACHE  [PATH_OF_CACHE stringByAppendingPathComponent:@"images"]
 
 #define path_for_png_res( _name_ )    [[NSBundle mainBundle] pathForResource:(_name_) ofType:@"png"]
 #define path_for_xml_res( _name_ )    [[NSBundle mainBundle] pathForResource:(_name_) ofType:@"xml"]
 #define path_for_res( _res_, _type_)  [[NSBundle mainBundle] pathForResource:(_res_) ofType:(_type_)]
-
-// 特殊数值
-#undef  invalid_int32
-#define invalid_int32 INT32_MAX
-
-#undef  invalid_int64
-#define invalid_int64 INT64_MAX
-
-#undef  invalid_float
-#define invalid_float MAXFLOAT
-
-#undef  invalid_bool
-#define invalid_bool NO
-
-#undef  MIN_FLOAT
-#define MIN_FLOAT 0.000001f
-
-// 特定的字符串
-
-#define empty_string        @""
-
-#undef undefined_string
-#define undefined_string @"未定义"
-
-#undef unselected_string
-#define unselected_string @"请选择"
 
 // 中文
 #define yyyy                @"yyyy"
