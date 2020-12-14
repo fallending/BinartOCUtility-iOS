@@ -1,11 +1,3 @@
-//
-//  MJGImageLoader.h
-//  MJGFoundation
-//
-//  Created by Matt Galloway on 18/01/2012.
-//  Copyright 2012 Matt Galloway. All rights reserved.
-//
-
 //  如果下面不工作，那么再去看一下：http://stackoverflow.com/questions/4676000/is-there-a-way-for-xcode-to-warn-about-new-api-calls
 
 /**
