@@ -1,9 +1,3 @@
-//
-//  BAUTrigger.h
-//  BinartOCUtility
-//
-//  Created by Seven on 2020/8/14.
-//
 
 #import <Foundation/Foundation.h>
 

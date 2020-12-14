@@ -1,6 +1,6 @@
-#import "BAUWeakProxy.h"
+#import "BAWeakProxy.h"
 
-@implementation BAUWeakProxy
+@implementation BAWeakProxy
 
 - (instancetype)initWithTarget:(id)target {
     _target = target;
@@ -8,7 +8,7 @@
 }
 
 + (instancetype)proxyWithTarget:(id)target {
-    return [[BAUWeakProxy alloc] initWithTarget:target];
+    return [[BAWeakProxy alloc] initWithTarget:target];
 }
 
 - (id)forwardingTargetForSelector:(SEL)selector {

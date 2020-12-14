@@ -1,12 +1,6 @@
-//
-//  BAUTrigger.m
-//  BinartOCUtility
-//
-//  Created by Seven on 2020/8/14.
-//
+#import "BATrigger.h"
 
 #import <objc/runtime.h>
-#import "BAUTrigger.h"
 
 typedef void ( *ImpFuncType )( id a, SEL b, void * c );
 

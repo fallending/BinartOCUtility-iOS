@@ -1,4 +1,5 @@
-#import "BAUTimer.h"
+#import "BATimer.h"
+
 #import <pthread.h>
 
 #define LOCK(...) dispatch_semaphore_wait(_lock, DISPATCH_TIME_FOREVER); \

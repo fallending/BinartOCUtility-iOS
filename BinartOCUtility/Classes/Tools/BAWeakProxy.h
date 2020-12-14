@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
     - (void)tick:(NSTimer *)timer {...}
     @end
 */
-@interface BAUWeakProxy : NSProxy
+@interface BAWeakProxy : NSProxy
 
 @property (nullable, nonatomic, weak, readonly) id target;
 
