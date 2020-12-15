@@ -19,6 +19,7 @@
 #pragma clang diagnostic ignored "-Wdeprecated"
 #pragma clang diagnostic ignored "-Wnonnull" // 类似[Wnonnull]这样的警告, 在工程buildSettings中的Other Warning Flags中添加 -Wno-nonnull就可以去掉这种类似的警告了, 规则为：-Wno-类型
 #pragma clang diagnostic ignored "-Wstrict-prototypes" // 忽略 ‘This block Declaration is not a prototype’ 警告
+#pragma clang diagnostic ignored "-Wmissing-noescape"
 
 
 // ----------------------------------

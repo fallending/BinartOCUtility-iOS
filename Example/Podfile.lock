@@ -1,5 +1,5 @@
 PODS:
-  - BinartOCUtility (0.2.2)
+  - BinartOCUtility (0.3.0)
   - Expecta (1.0.6)
   - Specta (1.0.7)
 
@@ -18,7 +18,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  BinartOCUtility: 713697fbcbb44d1e0f48b5b39d621a5835d5206c
+  BinartOCUtility: f2e831f3ea3ce5034d45a65f8a5805b84def28dd
   Expecta: 3b6bd90a64b9a1dcb0b70aa0e10a7f8f631667d5
   Specta: 3e1bd89c3517421982dc4d1c992503e48bd5fe66
 

@@ -103,7 +103,16 @@ static void BAUReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkRe
 
 - (BAUReachabilityWWANStatus)wwanStatus {
     if (!self.networkInfo) return BAUReachabilityWWANStatusNone;
-    NSString *status = self.networkInfo.currentRadioAccessTechnology;
+    NSString *status;
+    
+    if (@available(iOS 12.0, *)) { // >= 12.0 // @seven 当前还没有完全适配好
+        if (self.networkInfo.serviceCurrentRadioAccessTechnology.allKeys.count==0) {
+            return BAUReachabilityWWANStatusNone;
+        }
+    } else {
+        status = self.networkInfo.currentRadioAccessTechnology;
+    }
+    
     if (!status) return BAUReachabilityWWANStatusNone;
     static NSDictionary *dic;
     static dispatch_once_t onceToken;
