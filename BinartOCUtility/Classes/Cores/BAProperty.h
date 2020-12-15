@@ -75,40 +75,29 @@
 
 #pragma mark -
 
-#undef  nsnumber
-#define nsnumber( _name_ ) \
+#undef  NSNUMBER
+#define NSNUMBER( _name_ ) \
         property (nonatomic, readonly) NSNumber * _name_; \
         - (NSNumber *)_name_; \
         + (NSNumber *)_name_;
 
-#undef  def_nsnumber
-#define def_nsnumber( _name_, _value_ ) \
+#undef  DEF_NSNUMBER
+#define DEF_NSNUMBER( _name_, _value_ ) \
         dynamic _name_; \
         - (NSNumber *)_name_ { return @(_value_); } \
         + (NSNumber *)_name_ { return @(_value_); }
 
-#pragma mark -
-
 /**
- *  由于string()被系统库占用，所有加ns前缀
+ *  默认用_name_，作为字符串的内容
  */
-#undef  nsstring
-#define nsstring( _name_ ) \
+#undef  NSSTRING
+#define NSSTRING( _name_ ) \
         property (nonatomic, readonly) NSString * _name_; \
         - (NSString *)_name_; \
         + (NSString *)_name_;
 
-#undef  def_nsstring
-#define def_nsstring( _name_, _value_ ) \
-        dynamic _name_; \
-        - (NSString *)_name_ { return _value_; } \
-        + (NSString *)_name_ { return _value_; }
-
-/**
- *  默认用_name_，作为字符串的内容
- */
-#undef  def_string
-#define def_string( _name_ ) \
+#undef  DEF_NSSTRING
+#define DEF_NSSTRING( _name_ ) \
         dynamic _name_; \
         - (NSString *)_name_ { return [NSString stringWithFormat:@"%s", #_name_]; } \
         + (NSString *)_name_ { return [NSString stringWithFormat:@"%s", #_name_]; }

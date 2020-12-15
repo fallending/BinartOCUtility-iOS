@@ -10,46 +10,40 @@
  
  */
 
-#undef  make_error
-#define make_error( __domain, __code ) \
-([NSError errorWithDomain:__domain code:__code userInfo:nil])
+#undef  MAKE_ERROR
+#define MAKE_ERROR( __domain, __code ) \
+        ([NSError errorWithDomain:__domain code:__code userInfo:nil])
 
-#undef  make_error_3
-#define make_error_3( __domain, __code, __desc ) \
-([NSError errorWithDomain:__domain \
-code:__code \
-desc:__desc])
+#undef  MAKE_ERROR_3
+#define MAKE_ERROR_3( __domain, __code, __desc ) \
+        ([NSError errorWithDomain:__domain \
+        code:__code \
+        desc:__desc])
 
-#undef  error_message_of
-#define error_message_of( __error ) \
-(__error . userInfo [kErrorDescString])
-
-#pragma mark -
-
-#undef    error
-#define error( __name ) \
-property (nonatomic, readonly) NSError * __name; \
-- (NSError *)__name; \
-+ (NSError *)__name;
+#undef  NSERROR
+#define NSERROR( __name ) \
+        property (nonatomic, readonly) NSError * __name; \
+        - (NSError *)__name; \
+        + (NSError *)__name;
 
 // Error definition has error poll below
 
-#undef    def_error // 默认，把当前类，作为域 (domain)
-// @example: XXXVM的error属性，则domain为'XXXVM'
-#define def_error( __name, __value, __desc ) \
-dynamic __name; \
-- (NSError *)__name { return make_error_3(make_string_obj(NSStringFromClass([self class])), __value, __desc); } \
-+ (NSError *)__name { return make_error_3(make_string_obj(NSStringFromClass([self class])), __value, __desc); }
+// 默认，把当前类，作为域 (domain)
+#undef  DEF_ERROR
+#define DEF_ERROR( __name, __value, __desc ) \
+        dynamic __name; \
+        - (NSError *)__name { return MAKE_ERROR_3(NSStringFromClass([self class]), __value, __desc); } \
+        + (NSError *)__name { return MAKE_ERROR_3(NSStringFromClass([self class]), __value, __desc); }
 
-#undef    def_error_1 // 自定义 domain
-#define def_error_1( __name, __domain, __value, __desc ) \
+#undef  DEF_ERROR_1 // 自定义 domain
+#define DEF_ERROR_1( __name, __domain, __value, __desc ) \
 dynamic __name; \
-- (NSError *)__name { return make_error_3(__domain, __value, __desc); } \
-+ (NSError *)__name { return make_error_3(__domain, __value, __desc); }
+- (NSError *)__name { return MAKE_ERROR_3(__domain, __value, __desc); } \
++ (NSError *)__name { return MAKE_ERROR_3(__domain, __value, __desc); }
 
-#undef    def_error_2 // 默认，使用系统域
-#define def_error_2( __name, __value, __desc ) \
-def_error_1( __name, [NSError errorDomain], __value, __desc)
+#undef  DEF_ERROR_2 // 默认，使用系统域
+#define DEF_ERROR_2( __name, __value, __desc ) \
+        DEF_ERROR_1( __name, [NSError errorDomain], __value, __desc)
 
 
 
@@ -66,17 +60,8 @@ NS_ASSUME_NONNULL_BEGIN
 @prop_readonly( NSString *, domainKey )
 @prop_readonly( NSNumber *, codeKey )
 
-@nsstring( messagedKey )
-
-// == 系统的
-@nsstring( CocoaErrorDomain )
-@nsstring( LocalizedDescriptionKey )
-@nsstring( StringEncodingErrorKey )
-@nsstring( URLErrorKey )
-@nsstring( FilePathErrorKey )
-
-// == 框架的
-@nsstring( errorDomain )
+@NSSTRING( messagedKey )
+@NSSTRING( errorDomain )
 
 @prop_readonly( NSString *, message )
 

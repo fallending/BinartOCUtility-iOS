@@ -41,14 +41,8 @@
 
 @implementation NSError (Handler)
 
-@def_nsstring( messagedKey,                 @"NSError.message.key" )
-
-@def_nsstring( CocoaErrorDomain           , NSCocoaErrorDomain )
-@def_nsstring( LocalizedDescriptionKey    , NSLocalizedDescriptionKey )
-@def_nsstring( StringEncodingErrorKey     , NSStringEncodingErrorKey )
-@def_nsstring( URLErrorKey                , NSURLErrorKey )
-@def_nsstring( FilePathErrorKey           , NSFilePathErrorKey )
-@def_nsstring( errorDomain                , @"NSError.domain" )
+@DEF_NSSTRING( messagedKey )
+@DEF_NSSTRING( errorDomain )
 
 #pragma mark - Error maker
 
