@@ -7,7 +7,7 @@
 //
 
 #import "BAUAppDelegate.h"
-#import <BinartOCUtility/BinartOCUtility-umbrella.h>
+#import <BinartOCUtility/BAUtility.h>
 
 @implementation BAUAppDelegate
 

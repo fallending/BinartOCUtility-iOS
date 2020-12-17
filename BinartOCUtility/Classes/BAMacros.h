@@ -1,7 +1,3 @@
-
-#import <UIKit/UIKit.h>
-#import <Foundation/Foundation.h>
-
 // 元宏定义用小写
 // 普通宏定义用大写
 
@@ -9,7 +5,14 @@
 #define __BA_MACROS_H__
 
 // ----------------------------------
-// Common use macros
+// Common headers
+// ----------------------------------
+
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+
+// ----------------------------------
+// Common macros
 // ----------------------------------
 
 #if TARGET_IPHONE_SIMULATOR
@@ -147,13 +150,6 @@
 #undef  IS_PROTOCOL_IMPLEMENTED
 #define IS_PROTOCOL_IMPLEMENTED( o, p ) [o conformsToProtocol:@protocol(p)]
 
-// 判断对象是否null
-static inline BOOL __IS_NULL(id _Nullable thing) {
-    return thing == nil ||
-    ([thing isEqual:[NSNull null]]) ||
-    ([thing isKindOfClass:[NSNull class]]);
-}
-
 #undef  RETURN_IF
 #define RETURN_IF( _exp_ )                      if (_exp_) { return; }
 
@@ -218,6 +214,47 @@ static inline BOOL __IS_NULL(id _Nullable thing) {
 //#if NS_BLOCKS_AVAILABLE
 //typedef NSComparisonResult (^NSComparator)(id obj1, id obj2);
 //#endif
+
+// ----------------------------------
+// Inline functions
+// ----------------------------------
+
+static inline BOOL BA_IS_NULL(id _Nullable thing) {
+    return thing == nil ||
+    ([thing isEqual:[NSNull null]]) ||
+    ([thing isKindOfClass:[NSNull class]]);
+}
+
+
+static inline BOOL BA_IS_EMPTY(id _Nonnull thing) {
+    return thing == nil ||
+    ([thing isEqual:[NSNull null]]) ||
+    ([thing isKindOfClass:[NSNull class]]) ||
+    ([thing respondsToSelector:@selector(length)] && [(NSData *)thing length] == 0) ||
+    ([thing respondsToSelector:@selector(count)]  && [(NSArray *)thing count] == 0);
+}
+
+static inline BOOL BA_NOT_EMPTY(id _Nonnull thing) {
+    return !BA_IS_EMPTY(thing);
+}
+
+static inline size_t BA_LEN(id _Nonnull thing) {
+    if (BA_IS_EMPTY(thing)) return 0;
+    
+    if ([thing respondsToSelector:@selector(length)]) {
+        return (size_t)[thing performSelector:@selector(length)];
+    }
+    
+    if ([thing respondsToSelector:@selector(count)]) {
+        return (size_t)[thing performSelector:@selector(count)];
+    }
+    
+    if ([thing respondsToSelector:@selector(allKeys)]) {
+        return BA_LEN([thing performSelector:@selector(allKeys)]);
+    }
+    
+    return 0;
+}
 
 // ----------------------------------
 // System macros
@@ -322,16 +359,6 @@ static inline BOOL __IS_NULL(id _Nullable thing) {
 // String macros
 // ----------------------------------
 
-// 判断任何容器是否为空
-// http://www.wilshipley.com/blog/2005/10/pimp-my-code-interlude-free-code.html
-static inline BOOL __IS_EMPTY(id _Nullable thing) {
-    return thing == nil ||
-    ([thing isEqual:[NSNull null]]) ||
-    ([thing isKindOfClass:[NSNull class]]) ||
-    ([thing respondsToSelector:@selector(length)] && [(NSData *)thing length] == 0) ||
-    ([thing respondsToSelector:@selector(count)]  && [(NSArray *)thing count] == 0);
-}
-
 #undef  STRINGIFY
 #define STRINGIFY( s )                  @#s // 双 # 号 是拼接成c字符串
 
@@ -342,22 +369,23 @@ static inline BOOL __IS_EMPTY(id _Nullable thing) {
 // Block predefine
 // ----------------------------------
 
-typedef void(^ Block)( void );
-typedef void(^ BlockBlock)( _Nullable Block block );
-typedef void(^ BOOLBlock)( BOOL b );
-typedef void(^ ObjectBlock)( _Nullable id obj );
-typedef void(^ ArrayBlock)( NSArray * _Nullable array );
-typedef void(^ MutableArrayBlock)( NSMutableArray * _Nullable array );
-typedef void(^ DictionaryBlock)( NSDictionary *_Nullable dic );
-typedef void(^ ErrorBlock)( NSError * _Nullable error );
-typedef void(^ IndexBlock)( NSInteger index );
-typedef void(^ ListItemBlock)( NSInteger index, id _Nullable item );
-typedef void(^ FloatBlock)( CGFloat afloat );
-typedef void(^ StringBlock)( NSString * _Nullable str );
-typedef void(^ ImageBlock)( UIImage * _Nullable image );
+typedef void(^ BABlock)( void );
+typedef void(^ BABlockBlock)( _Nullable BABlock block );
+typedef void(^ BABOOLBlock)( BOOL b );
+typedef void(^ BAObjectBlock)( _Nullable id obj );
+typedef void(^ BAArrayBlock)( NSArray * _Nullable array );
+typedef void(^ BAMutableArrayBlock)( NSMutableArray * _Nullable array );
+typedef void(^ BADictionaryBlock)( NSDictionary *_Nullable dic );
+typedef void(^ BAErrorBlock)( NSError * _Nullable error );
+typedef void(^ BAIndexBlock)( NSInteger index );
+typedef void(^ BAListItemBlock)( NSInteger index, id _Nullable item );
+typedef void(^ BAFloatBlock)( CGFloat afloat );
+typedef void(^ BAStringBlock)( NSString * _Nullable str );
+typedef void(^ BAImageBlock)( UIImage * _Nullable image );
 typedef void(^ ProgressBlock)( NSProgress * _Nullable progress );
-typedef void(^ _ResponseBlock)( NSObject * _Nullable res, NSInteger err, NSString * _Nullable msg );
-typedef void(^ PercentBlock)( double percent); // 0~100
+typedef void(^ BACompleteBlock)( NSObject * _Nullable res, NSInteger err, NSString * _Nullable msg );
+typedef void(^ BAResponseBlock)( NSObject * _Nullable res, NSError * _Nullable err );
+typedef void(^ BAPercentBlock)( double percent); // 0~100
 
 /**
  操作类型：OperationType
@@ -365,16 +393,16 @@ typedef void(^ PercentBlock)( double percent); // 0~100
  */
 #define OperationTypeKey @"key.OperationType"
 typedef enum : NSUInteger {
-    _OperationAdd = 0,
-    _OperationDelete,
-    _OperationEdit,
-    _OperationQuery,
-} _OperationType;
+    BAOperationAdd = 0,
+    BAOperationDelete,
+    BAOperationEdit,
+    BAOperationQuery,
+} BAOperationType;
 
 typedef enum {
-    _HttpMethodGet = 0,
-    _HttpMethodPost = 1,
-    _HttpMethodDelete = 2
+    BAHttpMethodGet = 0,
+    BAHttpMethodPost = 1,
+    BAHttpMethodDelete = 2
 } _HttpMethodType;
 
 #endif // __BA_MACROS_H__
