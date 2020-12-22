@@ -13,7 +13,7 @@
 
 @implementation BAThreadSafeDictionary
 
-#pragma mark - init
+// MARK: - init
 
 - (instancetype)init {
     INIT(_container = [[NSMutableDictionary alloc] init]);
@@ -40,7 +40,7 @@
 }
 
 
-#pragma mark - method
+// MARK: - method
 
 - (NSUInteger)count {
     LOCK(NSUInteger c = _container.count); return c;
@@ -142,7 +142,7 @@
     LOCK(NSSet * a = [_container keysOfEntriesWithOptions:opts passingTest:predicate]); return a;
 }
 
-#pragma mark - mutable
+// MARK: - mutable
 
 - (void)removeObjectForKey:(id)aKey {
     LOCK([_container removeObjectForKey:aKey]);
@@ -172,7 +172,7 @@
     LOCK([_container setObject:obj forKeyedSubscript:key]);
 }
 
-#pragma mark - protocol
+// MARK: - protocol
 
 - (id)copyWithZone:(NSZone *)zone {
     return [self mutableCopyWithZone:zone];

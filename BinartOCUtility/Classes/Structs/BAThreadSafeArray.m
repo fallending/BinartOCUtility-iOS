@@ -37,7 +37,7 @@
     INIT(_container = [[NSMutableArray alloc] initWithContentsOfURL:url]);
 }
 
-#pragma mark - method
+// MARK: - method
 
 - (NSUInteger)count {
     LOCK(NSUInteger count = _container.count); return count;
@@ -199,7 +199,7 @@
     LOCK(NSUInteger i = [_container indexOfObject:obj inSortedRange:r options:opts usingComparator:cmp]); return i;
 }
 
-#pragma mark - mutable
+// MARK: - mutable
 
 - (void)addObject:(id)anObject {
     LOCK([_container addObject:anObject]);
@@ -316,7 +316,7 @@
     return NO;
 }
 
-#pragma mark - protocol
+// MARK: - protocol
 
 - (id)copyWithZone:(NSZone *)zone {
     return [self mutableCopyWithZone:zone];

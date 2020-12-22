@@ -3,6 +3,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+// Usage
+
+// 1. 遍历
+// for (id item in weakArray.objectEnumerator) {
+//      [item isProxy];
+// }
+
 @interface BAThreadSafeWeakArray : NSObject // : NSMutableArray
 
 - (NSUInteger)count;
@@ -20,10 +27,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
                                   objects:(id _Nonnull __unsafe_unretained[_Nonnull])stackbuf
                                     count:(NSUInteger)len;
-// 遍历
-//for (id item in weakArray.objectEnumerator) {
-//    [item isProxy];
-//}
 
 @end
 

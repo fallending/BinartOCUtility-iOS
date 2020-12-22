@@ -215,6 +215,13 @@
 //typedef NSComparisonResult (^NSComparator)(id obj1, id obj2);
 //#endif
 
+
+#undef  BA_MARRAY
+#define BA_MARRAY               [@[] mutableCopy]
+
+#undef  BA_MDICTIONARY
+#define BA_MDICTIONARY          [@[] mutableCopy]
+
 // ----------------------------------
 // Inline functions
 // ----------------------------------

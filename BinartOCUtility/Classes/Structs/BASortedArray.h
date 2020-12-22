@@ -3,7 +3,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface BASortedMutableArray : NSArray
+@interface BASortedArray : NSArray
 
 - (id)initWithDescriptors:(NSArray *)descriptors;
 - (id)initWithComparator:(NSComparator)comparator;

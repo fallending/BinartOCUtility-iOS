@@ -4,20 +4,20 @@
 #endif
 
 #import "BASortedArray.h"
+#import "BAThreadSafeArray.h"
 
-@interface BASortedMutableArray ()
-@property (nonatomic, strong) NSMutableArray *backingArray;
+@interface BASortedArray ()
+
+@property (nonatomic, strong) BAThreadSafeArray *elements;
 @property (nonatomic, strong) NSComparator comparator;
+
 @end
 
-@implementation BASortedMutableArray
-
-@synthesize backingArray = _backingArray;
-@synthesize comparator = _comparator;
+@implementation BASortedArray
 
 - (id)init {
     if ((self = [super init])) {
-        self.backingArray = [NSMutableArray new];
+        self.elements = [BAThreadSafeArray new];
     }
     return self;
 }
@@ -73,15 +73,15 @@
 }
 
 - (NSString*)description {
-    return [NSString stringWithFormat:@"<%@: %p, %@>", NSStringFromClass([self class]), self, _backingArray];
+    return [NSString stringWithFormat:@"<%@: %p, %@>", NSStringFromClass([self class]), self, _elements];
 }
 
 
-#pragma mark -
+// MARK: -
 
 - (NSUInteger)addObject:(id)obj {
-    NSUInteger addedIndex = [_backingArray indexOfObject:obj inSortedRange:NSMakeRange(0, _backingArray.count) options:NSBinarySearchingInsertionIndex usingComparator:_comparator];
-    [_backingArray insertObject:obj atIndex:addedIndex];
+    NSUInteger addedIndex = [_elements indexOfObject:obj inSortedRange:NSMakeRange(0, _elements.count) options:NSBinarySearchingInsertionIndex usingComparator:_comparator];
+    [_elements insertObject:obj atIndex:addedIndex];
     return addedIndex;
 }
 
@@ -116,51 +116,51 @@
 }
 
 - (void)removeObjectAtIndex:(NSUInteger)index {
-    [_backingArray removeObjectAtIndex:index];
+    [_elements removeObjectAtIndex:index];
 }
 
 - (void)removeObjectsInRange:(NSRange)range {
-    [_backingArray removeObjectsInRange:range];
+    [_elements removeObjectsInRange:range];
 }
 
 - (void)removeAllObjects {
-    [_backingArray removeAllObjects];
+    [_elements removeAllObjects];
 }
 
 - (void)removeLastObject {
-    [_backingArray removeLastObject];
+    [_elements removeLastObject];
 }
 
 
-#pragma mark - NSArray primitives
+// MARK: - NSArray primitives
 
 - (id)objectAtIndex:(NSUInteger)index {
-    return [_backingArray objectAtIndex:index];
+    return [_elements objectAtIndex:index];
 }
 
 - (NSUInteger)count {
-    return _backingArray.count;
+    return _elements.count;
 }
 
 - (NSUInteger)indexOfObject:(id)anObject {
-    return [self indexOfObject:anObject inSortedRange:NSMakeRange(0, _backingArray.count) options:NSBinarySearchingFirstEqual usingComparator:_comparator];
+    return [self indexOfObject:anObject inSortedRange:NSMakeRange(0, _elements.count) options:NSBinarySearchingFirstEqual usingComparator:_comparator];
 }
 
 - (void)enumerateObjectsUsingBlock:(void (NS_NOESCAPE ^)(id obj, NSUInteger idx, BOOL *stop))block {
-    [_backingArray enumerateObjectsUsingBlock:^(id obj2, NSUInteger idx2, BOOL *stop2) {
+    [_elements enumerateObjectsUsingBlock:^(id obj2, NSUInteger idx2, BOOL *stop2) {
         block(obj2, idx2, stop2);
     }];
 }
 
 - (void)enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(void (NS_NOESCAPE ^)(id obj, NSUInteger idx, BOOL *stop))block {
-    [_backingArray enumerateObjectsWithOptions:opts
+    [_elements enumerateObjectsWithOptions:opts
                                     usingBlock:^(id obj2, NSUInteger idx2, BOOL *stop2) {
                                         block(obj2, idx2, stop2);
                                     }];
 }
 
 - (void)enumerateObjectsAtIndexes:(NSIndexSet *)s options:(NSEnumerationOptions)opts usingBlock:(void (NS_NOESCAPE ^)(id obj, NSUInteger idx, BOOL *stop))block {
-    [_backingArray enumerateObjectsAtIndexes:s
+    [_elements enumerateObjectsAtIndexes:s
                                      options:opts
                                   usingBlock:^(id obj2, NSUInteger idx2, BOOL *stop2) {
                                       block(obj2, idx2, stop2);
@@ -168,10 +168,10 @@
 }
 
 
-#pragma mark - NSFastEnumeration
+// MARK: - NSFastEnumeration
 
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(__unsafe_unretained id [])buffer count:(NSUInteger)len {
-    return [_backingArray countByEnumeratingWithState:state objects:buffer count:len];
+    return [_elements countByEnumeratingWithState:state objects:buffer count:len];
 }
 
 @end
