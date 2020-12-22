@@ -38,7 +38,7 @@
 
 /* Begin PBXFileReference section */
 		234E4C0478FAC474022B5606 /* Pods-BinartOCUtility_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BinartOCUtility_Tests.release.xcconfig"; path = "Target Support Files/Pods-BinartOCUtility_Tests/Pods-BinartOCUtility_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		4C1D0E6AEFD50027D1E8B861 /* BinartOCUtility.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = BinartOCUtility.podspec; path = ../BinartOCUtility.podspec; sourceTree = "<group>"; };
+		4C1D0E6AEFD50027D1E8B861 /* BinartOCUtility.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = BinartOCUtility.podspec; path = ../BinartOCUtility.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		6003F58A195388D20070C39A /* BinartOCUtility_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BinartOCUtility_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
