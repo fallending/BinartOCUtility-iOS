@@ -1,6 +1,6 @@
 
 #import <Foundation/Foundation.h>
-#import "ProtocolExtension.h"
+#import "BAProtocol.h"
 #import <pthread.h>
 
 typedef struct {

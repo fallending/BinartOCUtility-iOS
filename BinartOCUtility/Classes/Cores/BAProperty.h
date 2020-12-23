@@ -5,75 +5,39 @@
 // MARK: Macros
 // ----------------------------------
 
-#undef  static_property
-#define static_property( _name_ ) \
+#undef  STATIC_PROPERTY
+#define STATIC_PROPERTY( _name_ ) \
         property (nonatomic, readonly) NSString * _name_; \
         - (NSString *)_name_; \
         + (NSString *)_name_;
 
-#undef  def_static_property
-#define def_static_property( _name_, ... ) \
-        macro_concat(def_static_property, macro_count(__VA_ARGS__))(_name_, __VA_ARGS__)
+#undef  DEF_STATIC_PROPERTY
+#define DEF_STATIC_PROPERTY( _name_, ... ) \
+        macro_concat(DEF_STATIC_PROPERTY, macro_count(__VA_ARGS__))(_name_, __VA_ARGS__)
 
-#undef  def_static_property0
-#define def_static_property0( _name_ ) \
+#undef  DEF_STATIC_PROPERTY0
+#define DEF_STATIC_PROPERTY0( _name_ ) \
         dynamic _name_; \
         - (NSString *)_name_ { return [NSString stringWithFormat:@"%s", #_name_]; } \
         + (NSString *)_name_ { return [NSString stringWithFormat:@"%s", #_name_]; }
 
-#undef  def_static_property1
-#define def_static_property1( _name_, A ) \
+#undef  DEF_STATIC_PROPERTY1
+#define DEF_STATIC_PROPERTY1( _name_, A ) \
         dynamic _name_; \
         - (NSString *)_name_ { return [NSString stringWithFormat:@"%@.%s", A, #_name_]; } \
         + (NSString *)_name_ { return [NSString stringWithFormat:@"%@.%s", A, #_name_]; }
 
-#undef  def_static_property2
-#define def_static_property2( _name_, A, B ) \
+#undef  DEF_STATIC_PROPERTY2
+#define DEF_STATIC_PROPERTY2( _name_, A, B ) \
         dynamic _name_; \
         - (NSString *)_name_ { return [NSString stringWithFormat:@"%@.%@.%s", A, B, #_name_]; } \
         + (NSString *)_name_ { return [NSString stringWithFormat:@"%@.%@.%s", A, B, #_name_]; }
 
-#undef  def_static_property3
-#define def_static_property3( _name_, A, B, C ) \
+#undef  DEF_STATIC_PROPERTY3
+#define DEF_STATIC_PROPERTY3( _name_, A, B, C ) \
         dynamic _name_; \
         - (NSString *)_name_ { return [NSString stringWithFormat:@"%@.%@.%@.%s", A, B, C, #_name_]; } \
         + (NSString *)_name_ { return [NSString stringWithFormat:@"%@.%@.%@.%s", A, B, C, #_name_]; }
-
-#undef  alias_static_property
-#define alias_static_property( _name_, _alias_ ) \
-        dynamic _name_; \
-        - (NSString *)_name_ { return _alias_; } \
-        + (NSString *)_name_ { return _alias_; }
-
-#pragma mark -
-
-#undef  integer
-#define integer( _name_ ) \
-        property (nonatomic, readonly) NSInteger _name_; \
-        - (NSInteger)_name_; \
-        + (NSInteger)_name_;
-
-#undef  def_integer
-#define def_integer( _name_, _value_ ) \
-        dynamic _name_; \
-        - (NSInteger)_name_ { return _value_; } \
-        + (NSInteger)_name_ { return _value_; }
-
-#pragma mark -
-
-#undef  unsigned_integer
-#define unsigned_integer( _name_ ) \
-        property (nonatomic, readonly) NSUInteger _name_; \
-        - (NSUInteger)_name_; \
-        + (NSUInteger)_name_;
-
-#undef  def_unsigned_integer
-#define def_unsigned_integer( _name_, _value_ ) \
-        dynamic _name_; \
-        - (NSUInteger)_name_ { return _value_; } \
-        + (NSUInteger)_name_ { return _value_; }
-
-#pragma mark -
 
 #undef  NSNUMBER
 #define NSNUMBER( _name_ ) \
@@ -87,9 +51,6 @@
         - (NSNumber *)_name_ { return @(_value_); } \
         + (NSNumber *)_name_ { return @(_value_); }
 
-/**
- *  默认用_name_，作为字符串的内容
- */
 #undef  NSSTRING
 #define NSSTRING( _name_ ) \
         property (nonatomic, readonly) NSString * _name_; \
@@ -102,82 +63,47 @@
         - (NSString *)_name_ { return [NSString stringWithFormat:@"%s", #_name_]; } \
         + (NSString *)_name_ { return [NSString stringWithFormat:@"%s", #_name_]; }
 
-#pragma mark -
+// MAKR: -
 
-#define prop_readonly( type, name )         property (nonatomic, readonly) type name;
-#define prop_dynamic( type, name )          property (nonatomic, strong) type name;
-#define prop_assign( type, name )           property (nonatomic, assign) type name;
-#define prop_strong( type, name )           property (nonatomic, strong) type name;
-#define prop_weak( type, name )             property (nonatomic, weak) type name;
-#define prop_copy( type, name )             property (nonatomic, copy) type name;
-#define prop_unsafe( type, name )           property (nonatomic, unsafe_unretained) type name;
-#define prop_class( type, name )            property (nonatomic, class) type name;
+#define PROP_READONLY( type, name )         property (nonatomic, readonly) type name;
+#define PROP_DYNAMIC( type, name )          property (nonatomic, strong) type name;
+#define PROP_ASSIGN( type, name )           property (nonatomic, assign) type name;
+#define PROP_STRONG( type, name )           property (nonatomic, strong) type name;
+#define PROP_WEAK( type, name )             property (nonatomic, weak) type name;
+#define PROP_COPY( type, name )             property (nonatomic, copy) type name;
+#define PROP_STATIC( type, name )           property (nonatomic, class) type name;
 
-#pragma mark -
+// MAKR: -
 
-#define def_prop_readonly( type, name, ... ) \
+#define DEF_PROP_READONLY( type, name, ... ) \
         synthesize name = _##name; \
         + (NSString *)property_##name { return macro_string( macro_join(__VA_ARGS__) ); }
 
-#define def_prop_assign( type, name, ... ) \
+#define DEF_PROP_DYNAMIC( type, name, ... ) \
+        dynamic name; \
+        + (NSString *)property_##name { return macro_string( macro_join(__VA_ARGS__) ); }
+
+#define DEF_PROP_ASSIGN( type, name, ... ) \
         synthesize name = _##name; \
         + (NSString *)property_##name { return macro_string( macro_join(__VA_ARGS__) ); }
 
-#define def_prop_strong( type, name, ... ) \
+#define DEF_PROP_STRONG( type, name, ... ) \
         synthesize name = _##name; \
         + (NSString *)property_##name { return macro_string( macro_join(__VA_ARGS__) ); }
 
-#define def_prop_weak( type, name, ... ) \
+#define DEF_PROP_WEAK( type, name, ... ) \
         synthesize name = _##name; \
         + (NSString *)property_##name { return macro_string( macro_join(__VA_ARGS__) ); }
 
-#define def_prop_copy( type, name, ... ) \
+#define DEF_PROP_COPY( type, name, ... ) \
         synthesize name = _##name; \
         + (NSString *)property_##name { return macro_string( macro_join(__VA_ARGS__) ); }
 
-#define def_prop_unsafe( type, name, ... ) \
-        synthesize name = _##name; \
-        + (NSString *)property_##name { return macro_string( macro_join(__VA_ARGS__) ); }
-
-#define def_prop_class( type, name, setName ) \
+#define DEF_PROP_STATIC( type, name, setName ) \
         dynamic name; \
         static type __##name; \
         + (type)name { return __##name; } \
         + (void)setName:(type)name { __##name = name; }
-
-#define def_prop_dynamic( type, name, ... ) \
-        dynamic name; \
-        + (NSString *)property_##name { return macro_string( macro_join(__VA_ARGS__) ); }
-
-#define def_prop_dynamic_copy( type, name, setName, ... ) \
-        def_prop_custom( type, name, setName, copy ) \
-        + (NSString *)property_##name { return macro_string( macro_join(__VA_ARGS__) ); }
-
-#define def_prop_dynamic_strong( type, name, setName, ... ) \
-        def_prop_custom( type, name, setName, retain ) \
-        + (NSString *)property_##name { return macro_string( macro_join(__VA_ARGS__) ); }
-
-#define def_prop_dynamic_unsafe( type, name, setName, ... ) \
-        def_prop_custom( type, name, setName, assign ) \
-        + (NSString *)property_##name { return macro_string( macro_join(__VA_ARGS__) ); }
-
-#define def_prop_dynamic_weak( type, name, setName, ... ) \
-        def_prop_custom( type, name, setName, assign ) \
-        + (NSString *)property_##name { return macro_string( macro_join(__VA_ARGS__) ); }
-
-#define def_prop_dynamic_assign( type, name, setName, ... ) \
-        def_prop_custom( type, name, setName, assign ) \
-        + (NSString *)property_##name { return macro_string( macro_join(__VA_ARGS__) ); }
-
-#define def_prop_custom( type, name, setName, attr ) \
-        dynamic name; \
-        - (type)name { return [self getAssociatedObjectForKey:#name]; } \
-        - (void)setName:(type)obj { [self attr##AssociatedObject:obj forKey:#name]; }
-
-#define def_prop_custom_block( type, name, setName, attr, getter, setter ) \
-        dynamic name; \
-        - (type)name { if (getter) getter(); return [self getAssociatedObjectForKey:#name]; } \
-        - (void)setName:(type)obj { [self attr##AssociatedObject:obj forKey:#name];if (setter) setter(); }
 
 // ----------------------------------
 // MARK: Class code
@@ -187,26 +113,26 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSObject ( BAProperty )
 
-+ (const char *)attributesForProperty:(NSString *)property;
-- (const char *)attributesForProperty:(NSString *)property;
++ (const char *)ba_attributesForProperty:(NSString *)property;
+- (const char *)ba_attributesForProperty:(NSString *)property;
 
-+ (NSDictionary *)extentionForProperty:(NSString *)property;
-- (NSDictionary *)extentionForProperty:(NSString *)property;
++ (NSDictionary *)ba_extentionForProperty:(NSString *)property;
+- (NSDictionary *)ba_extentionForProperty:(NSString *)property;
 
-+ (NSString *)extentionForProperty:(NSString *)property stringValueWithKey:(NSString *)key;
-- (NSString *)extentionForProperty:(NSString *)property stringValueWithKey:(NSString *)key;
++ (NSString *)ba_extentionForProperty:(NSString *)property stringValueWithKey:(NSString *)key;
+- (NSString *)ba_extentionForProperty:(NSString *)property stringValueWithKey:(NSString *)key;
 
-+ (NSArray *)extentionForProperty:(NSString *)property arrayValueWithKey:(NSString *)key;
-- (NSArray *)extentionForProperty:(NSString *)property arrayValueWithKey:(NSString *)key;
++ (NSArray *)ba_extentionForProperty:(NSString *)property arrayValueWithKey:(NSString *)key;
+- (NSArray *)ba_extentionForProperty:(NSString *)property arrayValueWithKey:(NSString *)key;
 
-- (BOOL)hasAssociatedObjectForKey:(const char *)key;
-- (id)getAssociatedObjectForKey:(const char *)key;
-- (id)copyAssociatedObject:(id)obj forKey:(const char *)key;
-- (id)retainAssociatedObject:(id)obj forKey:(const char *)key;
-- (id)assignAssociatedObject:(id)obj forKey:(const char *)key;
-- (void)weaklyAssociateObject:(id)obj forKey:(const char *)key;
-- (void)removeAssociatedObjectForKey:(const char *)key;
-- (void)removeAllAssociatedObjects;
+- (BOOL)ba_hasAssociatedObjectForKey:(const char *)key;
+- (id)ba_getAssociatedObjectForKey:(const char *)key;
+- (id)ba_copyAssociatedObject:(id)obj forKey:(const char *)key;
+- (id)ba_retainAssociatedObject:(id)obj forKey:(const char *)key;
+- (id)ba_assignAssociatedObject:(id)obj forKey:(const char *)key;
+- (void)ba_weaklyAssociateObject:(id)obj forKey:(const char *)key;
+- (void)ba_removeAssociatedObjectForKey:(const char *)key;
+- (void)ba_removeAllAssociatedObjects;
 
 @end
 

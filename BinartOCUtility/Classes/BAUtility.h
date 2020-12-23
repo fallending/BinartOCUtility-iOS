@@ -18,6 +18,8 @@
 #import "BAThreadSafeWeakArray.h"
 
 // Tools
+#import "BAError.h"
+#import "BAKeychain.h"
 #import "BAQueues.h"
 #import "BAReachability.h"
 #import "BATimer.h"

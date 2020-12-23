@@ -32,51 +32,33 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)hasPropertyForKey:(NSString *)key;
 
 /**
- *  @brief Check whether the receiver implements or inherits a specified method up to and exluding a particular class in hierarchy.
- *
- *  @param selector A selector that identifies a method.
- *  @param stopClass A final super class to stop quering (excluding it).
- *  @return YES if one of super classes in hierarchy responds a specified selector.
+ * Check whether the receiver implements or inherits a specified method up to and exluding a particular class in hierarchy.
  */
 - (BOOL)respondsToSelector:(SEL)selector untilClass:(Class)stopClass;
 
 /**
- *  @brief Check whether a superclass implements or inherits a specified method.
- *
- *  @param selector A selector that identifies a method.
- *  @return YES if one of super classes in hierarchy responds a specified selector.
+ * Check whether a superclass implements or inherits a specified method.
  */
 - (BOOL)superRespondsToSelector:(SEL)selector;
 
 /**
- *  @brief Check whether a superclass implements or inherits a specified method.
- *
- *  @param selector A selector that identifies a method.
- *  @param stopClass A final super class to stop quering (excluding it).
- *  @return YES if one of super classes in hierarchy responds a specified selector.
+ * Check whether a superclass implements or inherits a specified method.
  */
 - (BOOL)superRespondsToSelector:(SEL)selector untilClass:(Class)stopClass;
 
 /**
- *  @brief Check whether the receiver's instances implement or inherit a specified method up to and exluding a particular class in hierarchy.
- *
- *  @param selector A selector that identifies a method.
- *  @param stopClass A final super class to stop quering (excluding it).
- *  @return YES if one of super classes in hierarchy responds a specified selector.
- *
+ * Check whether the receiver's instances implement or inherit a specified method up to and exluding a particular class in hierarchy.
  */
 + (BOOL)instancesRespondToSelector:(SEL)selector untilClass:(Class)stopClass;
 
 /**
- *  @brief perform a selector take care of selector not existing.
+ * perform a selector take care of selector not existing.
  */
 + (id)touchSelector:(SEL)selector;
 - (id)touchSelector:(SEL)selector;
 
-// inspired by CBExtension
-
 /**
- *  @brief 该对象所遵循的协议
+ * 该对象所遵循的协议
  */
 - (NSArray *)conformedProtocols;
 - (NSDictionary *)protocols;
@@ -84,13 +66,13 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSArray *)classesWithProtocolName:(NSString *)protocolName;
 
 /**
- *  @brief 返回对象的所有 ivar
+ * 返回对象的所有 ivar
  */
 - (NSArray *)allIvars;
 - (BOOL)hasIvarForKey:(NSString *)key;
 
 /**
- *  @brief 以 NSString 描述的类名
+ * 以 NSString 描述的类名
  */
 - (NSString *)className;
 + (NSString *)className;
@@ -99,7 +81,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)superClassName;
 
 /**
- *  @brief 所有父类
+ * 所有父类
  */
 - (NSArray *)parents;
 
@@ -107,4 +89,47 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@interface NSObject ( Extension )
+
++ (Class)baseClass;
+
+- (void)deepEqualsTo:(id)obj;
+- (void)deepCopyFrom:(id)obj;
+
+- (BOOL)shallowCopy:(NSObject *)obj;
+- (BOOL)deepCopy:(NSObject *)obj;
+- (id)deepCopy;
+
+- (id)clone;                    // override point
+
++ (BOOL)isNullValue:(id)value;
+
+@end
+
+@interface NSInvocation ( Extension )
+
++ (id)doInstanceMethodTarget:(id)target
+                selectorName:(NSString *)selectorName
+                        args:(NSArray *)args;
+
++ (id)doClassMethod:(NSString *)className
+       selectorName:(NSString *)selectorName
+               args:(NSArray *)args;
+
+- (void)setArgumentWithObject:(id)object atIndex:(NSUInteger)index;
+
++ (instancetype)invocationWithTarget:(id)target block:(void (^)(id target))block;
++ (instancetype)invocationWithBlock:(id) block;
++ (instancetype)invocationWithBlockAndArguments:(id) block ,...;
+
+@end
+
+@interface BARuntime : NSObject
+
+- (NSArray *)backtrace:(NSException *)exception;
+
+@end
+
+
 NS_ASSUME_NONNULL_END
+

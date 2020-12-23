@@ -38,8 +38,6 @@ static NSArray<NSString *>* __variablesAt(char *section) {
             continue;
         }
         
-//        LOG(@"config = %@", str);
-        
         [configs addObject:str];
     }
     

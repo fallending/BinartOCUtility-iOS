@@ -1,50 +1,10 @@
 #import "BAError.h"
-
 #import <objc/runtime.h>
-
-//@interface NSObject ( BAError )
-//
-//- (void)objectPropertyTraversal;
-//+ (void)objectPropertyTraversal;
-//
-//@end
-
-//@implementation NSError ( BA )
-//
-//- (id)valueForUndefinedKey:(NSString *)key {
-//    return nil;
-//}
-//
-//+ (NSError *)errorForCode:(NSInteger)code {
-//    NSError *error = make_error(NSStringFromClass([self class]), code);
-//
-//    if (![error isPooled]) { // pool中没有该key的error
-//        [self objectPropertyTraversal];
-//    }
-//
-//    return make_error_3(NSStringFromClass([self class]), code, nil);
-//}
-//
-//- (NSError *)errorForCode:(NSInteger)code {
-//    NSError *error = make_error(NSStringFromClass([self class]), code);
-//
-//    if (![error isPooled]) {
-//        [self objectPropertyTraversal];
-//    }
-//
-//    return make_error_3(NSStringFromClass([self class]), code, nil);
-//}
-//
-//@end
-
-#pragma mark -
 
 @implementation NSError (Handler)
 
 @DEF_NSSTRING( messagedKey )
 @DEF_NSSTRING( errorDomain )
-
-#pragma mark - Error maker
 
 + (instancetype)errorWithDomain:(NSString *)domain
                            code:(NSInteger)code
@@ -59,27 +19,9 @@
     return error;
 }
 
-#pragma mark - Equal
-
-- (BOOL)isInteger:(NSInteger)code {
+- (BOOL)is:(NSInteger)code {
     return [self code] == code;
 }
-
-- (BOOL)is:(NSError *)error {
-    
-    if ([[self domain] isEqual:[error domain]] &&
-        [self code] == [error code]) {
-        return YES;
-    } else if ([self code] == [error code]) {
-        LOG(@"error 相比，code相等，domain不同, %@, %@", self, error);
-        
-        return YES;
-    }
-    
-    return NO;
-}
-
-#pragma mark - UserInfo
 
 - (NSString *)message {
     
@@ -93,48 +35,4 @@
     return @"";
 }
 
-#pragma mark - Key
-
-- (NSString *)storedKey {
-    return [NSString stringWithFormat:@"%@.%zd", self.domain, self.code]; // todo: use MACRO
-}
-
-- (NSString *)domainKey {
-    return [self domain];
-}
-
-- (NSNumber *)codeKey {
-    return @(self.code);
-}
-
 @end
-
-
-//@implementation NSObject (Property_Traversal)
-//
-//+ (void)objectPropertyTraversal {
-//    unsigned int propsCount;
-//    objc_property_t *props = class_copyPropertyList([self class], &propsCount);
-//    
-//    //    TODO( "Should be 递归" )
-//    for(int i = 0; i < propsCount; i++) {
-//        objc_property_t prop    = props[i];
-//        NSString *propName      = [NSString stringWithUTF8String:property_getName(prop)];
-//        __unused id value       = [self valueForKey:propName];
-//    }
-//}
-//
-//- (void)objectPropertyTraversal {
-//    unsigned int propsCount;
-//    objc_property_t *props = class_copyPropertyList([self class], &propsCount);
-//    
-//    //    TODO( "Should be 递归" )
-//    
-//    for(int i = 0; i < propsCount; i++) {
-//        objc_property_t prop    = props[i];
-//        NSString *propName      = [NSString stringWithUTF8String:property_getName(prop)];
-//        __unused id value       = [self valueForKey:propName];
-//    }
-//}
-//
-//@end

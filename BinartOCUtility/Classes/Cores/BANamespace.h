@@ -95,11 +95,7 @@
         } \
         @end
 
-// ----------------------------------
-// MARK: Interface - _Namespace
-// ----------------------------------
-
-@interface _Namespace : NSObject
+@interface BANamespace : NSObject
 @end
 
 // ----------------------------------
@@ -110,4 +106,4 @@
 // 2. 从任意命名空间出发，能够树状访问所有内部单例或对象
 // ----------------------------------
 
-extern _Namespace * namespace_root;
+extern BANamespace * namespace_root;

@@ -122,13 +122,75 @@
 #undef  WEAKLY
 #define WEAKLY( value )                 __unused __weak typeof(value) _ = value;
 
+#undef  IS_MAIN
+#define IS_MAIN                          [NSThread isMainThread]
+
+#undef  WEAKIFY
+#define WEAKIFY( x ) \
+    _Pragma("clang diagnostic push") \
+    _Pragma("clang diagnostic ignored \"-Wshadow\"") \
+    autoreleasepool{} __weak __typeof__(x) __weak_##x##__ = x; \
+    _Pragma("clang diagnostic pop")
+
+#undef  STRONGIFY
+#define STRONGIFY( x ) \
+    _Pragma("clang diagnostic push") \
+    _Pragma("clang diagnostic ignored \"-Wshadow\"") \
+    try{} @finally{} __typeof__(x) x = __weak_##x##__; \
+    _Pragma("clang diagnostic pop")
+
+#undef  DELAY // timeout ms
+#define DELAY(timeout, block) \
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(timeout * NSEC_PER_SEC)), dispatch_get_main_queue(), block);
+
+/// 信号量实现简单的异步转同步
+#undef  SYNC_INIT
+#define SYNC_INIT dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+
+#undef  SYNC_WAIT
+#define SYNC_WAIT dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+
+#undef  SYNC_SEND
+#define SYNC_SEND dispatch_semaphore_signal(sema);
+
+/// 当前方法名称
+#undef  SEL_NAME
+#define SEL_NAME NSStringFromSelector(_cmd)
+#define METHOD_NAME SEL_NAME
+
+/// 属性已过期
+#undef  DEPRECATED_PROP
+#define DEPRECATED_PROP __attribute__((deprecated("属性已过期")))
+
+// 标记这个属性已过期
+//@property (nonatomic, copy) NSString *name __attribute__((deprecated("属性已过期")));
+//
+//// 标记方法已过期
+//- (void)testOld __attribute__((deprecated("方法已过期, 请使用 test2"))) {
+//
+//}
+
+/// 方法已过期
+#undef  DEPRECATED_SEL
+#define DEPRECATED_SEL() __attribute__((deprecated("方法已过期")))
+
+// https://cloud.tencent.com/developer/article/1400469
+// 可以自定义描述信息
+//__attribute__((deprecated("已过期!"))) // 编译警告
+// 系统的宏定义
+//DEPRECATED_ATTRIBUTE
+
+// 可以自定义描述信息
+//__attribute__((unavailable("已经废弃,请使用 xxxx"))) // 编译报错
+// 系统宏定义
+//NS_UNAVAILABLE;
+//UNAVAILABLE_ATTRIBUTE;
+
 // 调试代码块
 #ifdef DEBUG
-#define LOG( s, ... )                   fprintf(stderr,"%s, %d, %s\n", [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], __LINE__, [[NSString stringWithFormat:(s), ##__VA_ARGS__] UTF8String]);
-#define DEBUG_CODE( code_fragment )     { code_fragment }
+#define BA_LOG( s, ... )                   fprintf(stderr,"%s, %d, %s\n", [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], __LINE__, [[NSString stringWithFormat:(s), ##__VA_ARGS__] UTF8String]);
 #else
-#define LOG( s, ... )
-#define DEBUG_CODE( code_fragment )
+#define BA_LOG( s, ... )
 #endif
 
 // 大小
@@ -210,17 +272,6 @@
         { \
             [self shared]; \
         }
-
-//#if NS_BLOCKS_AVAILABLE
-//typedef NSComparisonResult (^NSComparator)(id obj1, id obj2);
-//#endif
-
-
-#undef  BA_MARRAY
-#define BA_MARRAY               [@[] mutableCopy]
-
-#undef  BA_MDICTIONARY
-#define BA_MDICTIONARY          [@[] mutableCopy]
 
 // ----------------------------------
 // Inline functions

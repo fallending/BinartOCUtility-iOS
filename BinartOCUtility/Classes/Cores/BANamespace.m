@@ -5,16 +5,16 @@
 // MARK: Extern
 // ----------------------------------
 
-__strong _Namespace * namespace_root = nil;
+__strong BANamespace * namespace_root = nil;
 
 // ----------------------------------
 // MARK: Source - _Namespace
 // ----------------------------------
 
-@implementation _Namespace
+@implementation BANamespace
 
 + (void)load {
-    namespace_root = [[_Namespace alloc] init];
+    namespace_root = [[BANamespace alloc] init];
 }
 
 @end
