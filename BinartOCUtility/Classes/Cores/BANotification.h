@@ -7,7 +7,7 @@
 
 #undef  DEF_NOTIFICATION
 #define DEF_NOTIFICATION( name ) \
-        def_static_property2( name, @"notification", NSStringFromClass([self class]) )
+        DEF_STATIC_PROPERTY2( name, @"notification", NSStringFromClass([self class]) )
 
 NS_ASSUME_NONNULL_BEGIN
 

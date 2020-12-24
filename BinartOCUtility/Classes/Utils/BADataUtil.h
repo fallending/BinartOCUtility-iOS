@@ -3,29 +3,27 @@
 
 @interface NSData ( BAUtil )
 
-@property (nonatomic, readonly) NSString *    string;
-@property (nonatomic, readonly) NSString *    utf8String;
+@PROP_READONLY( BOOL, ba_isJPEG )
+@PROP_READONLY( BOOL, ba_isPNG )
+@PROP_READONLY( BOOL, ba_isImage )
+@PROP_READONLY( BOOL, ba_isMPEG4 )
+@PROP_READONLY( BOOL, ba_isMedia )
+@PROP_READONLY( BOOL, ba_isCompressed )
 
-- (BOOL)isJPEG;
-- (BOOL)isPNG;
-- (BOOL)isImage;
-- (BOOL)isMPEG4;
-- (BOOL)isMedia;
-- (BOOL)isCompressed;
-- (NSString *)appropriateFileExtension;
+@PROP_READONLY( NSString *, ba_appropriateFileExtension )
 
-+ (NSData *)ba_base64EncodedString:(NSString *)string;
-- (NSString *)ba_base64EncodedString;
+@PROP_READONLY( NSString *, ba_UTF8String )
+@PROP_READONLY( NSString *, ba_ASCIIString )
+@PROP_READONLY( NSString *, ba_MD5String )
+@PROP_READONLY( NSString *, ba_HEXString )
 
-- (NSString *)ba_UTF8String;
-- (NSString *)ba_ASCIIString;
-- (NSString *)ba_MD5String;
-
-@PROP_READONLY( NSString *, ba_HEXString)
+@PROP_READONLY( NSString *, ba_BASE64String )
 
 @end
 
 ///
 @interface BADataUtil: NSObject
+
++ (NSData *)ba_base64EncodedString:(NSString *)string;
 
 @end

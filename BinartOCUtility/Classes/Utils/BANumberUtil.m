@@ -2,7 +2,7 @@
 
 @implementation NSNumber ( BAUtil )
 
-- (NSString *)toDisplayNumberWithDigit:(NSInteger)digit {
+- (NSString *)ba_toDisplayNumberWithDigit:(NSInteger)digit {
     NSString *result = nil;
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
     
@@ -18,7 +18,7 @@
     return result;
 }
 
-- (NSString *)toDisplayPercentageWithDigit:(NSInteger)digit {
+- (NSString *)ba_toDisplayPercentageWithDigit:(NSInteger)digit {
     NSString *result = nil;
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
     
@@ -31,14 +31,7 @@
     return result;
 }
 
-/**
- *  @brief  四舍五入
- *
- *  @param digit  限制最大位数
- *
- *  @return 结果
- */
-- (NSNumber *)doRoundWithDigit:(NSUInteger)digit {
+- (NSNumber *)ba_doRoundWithDigit:(NSUInteger)digit {
     NSNumber *result = nil;
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
     
@@ -51,14 +44,7 @@
     return result;
 }
 
-/**
- *  @brief  取上整
- *
- *  @param digit  限制最大位数
- *
- *  @return 结果
- */
-- (NSNumber *)doCeilWithDigit:(NSUInteger)digit {
+- (NSNumber *)ba_doCeilWithDigit:(NSUInteger)digit {
     NSNumber *result = nil;
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
     
@@ -70,14 +56,7 @@
     return result;
 }
 
-/**
- *  @brief  取下整
- *
- *  @param digit  限制最大位数
- *
- *  @return 结果
- */
-- (NSNumber *)doFloorWithDigit:(NSUInteger)digit {
+- (NSNumber *)ba_doFloorWithDigit:(NSUInteger)digit {
     NSNumber *result = nil;
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
     
@@ -89,7 +68,7 @@
     return result;
 }
 
-- (void)times:(void (^)(void))block {
+- (void)ba_times:(void (^)(void))block {
     NSParameterAssert(block != nil);
     
     for (NSInteger idx = 0 ; idx < self.integerValue ; ++idx ) {

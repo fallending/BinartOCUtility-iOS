@@ -1,3 +1,4 @@
+#import "BAAnnotation.h"
 #include <mach-o/getsect.h>
 #include <mach-o/loader.h>
 #include <mach-o/dyld.h>
@@ -5,8 +6,6 @@
 #import <objc/runtime.h>
 #import <objc/message.h>
 
-#import "BAAnnotation.h"
-#import "BAMacros.h"
 
 // ----------------------------------
 // MARK: C code
@@ -51,31 +50,31 @@ static NSArray<NSString *>* __variablesAt(char *section) {
 
 @implementation BAAnnotation
 
-+ (NSArray<NSString *> *)annotationObjects {
++ (NSArray<NSString *> *)ba_annotationObjects {
     static NSArray<NSString *> *objects = nil;
     
     EXEC_ONCE( ^{
-        objects = __variablesAt(annotation_sectioname);
+        objects = __variablesAt(ANNOTATION_SECTIONNAME);
     })
     
     return objects;
 }
 
-+ (NSArray<NSString *> *)annotationBindings {
++ (NSArray<NSString *> *)ba_annotationBindings {
     static NSArray<NSString *> *bindings = nil;
     
     EXEC_ONCE( ^{
-        bindings = __variablesAt(annotation_sectioname);
+        bindings = __variablesAt(ANNOTATION_SECTIONNAME);
     })
     
     return bindings;
 }
 
-+ (NSArray<NSString *> *)annotationObjectsForSectioname:(NSString *)sectioname {
++ (NSArray<NSString *> *)ba_annotationObjectsForSectioname:(NSString *)sectioname {
     return __variablesAt((char *)sectioname.UTF8String);
 }
 
-+ (NSArray<NSString *> *)annotationBindingsForSectioname:(NSString *)sectioname {
++ (NSArray<NSString *> *)ba_annotationBindingsForSectioname:(NSString *)sectioname {
     return __variablesAt((char *)sectioname.UTF8String);
 }
 

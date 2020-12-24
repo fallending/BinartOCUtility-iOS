@@ -1,9 +1,5 @@
 #import "BAEncoding.h"
 
-// ----------------------------------
-// MARK: C functions
-// ----------------------------------
-
 EncodingType __EncodingGetType(const char *typeEncoding) {
     char *type = (char *)typeEncoding;
     if (!type) return EncodingType_Unknown;
@@ -92,10 +88,6 @@ EncodingType __EncodingGetType(const char *typeEncoding) {
     return NO;
 }
 
-// ----------------------------------
-// MARK: Public
-// ----------------------------------
-
 + (EncodingType)typeOfIvar:(Ivar)ivar {
     const char *typeEncoding = ivar_getTypeEncoding(ivar);
     
@@ -119,10 +111,6 @@ EncodingType __EncodingGetType(const char *typeEncoding) {
 + (NSString *)typeEncodingOfPropertyAttribute:(objc_property_attribute_t)attribute {
     return [NSString stringWithUTF8String:attribute.value];
 }
-
-// ----------------------------------
-// MARK: -
-// ----------------------------------
 
 + (EncodingType)typeOfAttribute:(const char *)attr {
     if ( NULL == attr ) {
@@ -310,8 +298,6 @@ EncodingType __EncodingGetType(const char *typeEncoding) {
     return [[obj class] description];
 }
 
-#pragma mark -
-
 + (Class)classOfAttribute:(const char *)attr {
     if ( NULL == attr ) {
         return nil;
@@ -323,8 +309,6 @@ EncodingType __EncodingGetType(const char *typeEncoding) {
     
     return NSClassFromString( className );
 }
-
-#pragma mark -
 
 + (BOOL)isAtomObject:(id)obj {
     if ( nil == obj ) {

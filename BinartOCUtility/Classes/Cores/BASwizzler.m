@@ -17,14 +17,10 @@
 	}
 #define SetNSError(ERROR_VAR, FORMAT,...) SetNSErrorFor(__func__, ERROR_VAR, FORMAT, ##__VA_ARGS__)
 
-// ----------------------------------
-// Source code
-// ----------------------------------
-
 @implementation NSObject ( BASwizzler )
 
 
-+ (BOOL)swizzleMethod:(SEL)originalSelector withMethod:(SEL)newSelector error:(NSError *__autoreleasing *)error {
++ (BOOL)ba_swizzleMethod:(SEL)originalSelector withMethod:(SEL)newSelector error:(NSError *__autoreleasing *)error {
 	Method origMethod = class_getInstanceMethod(self, originalSelector);
 	if (!origMethod) {
 		SetNSError(error, @"original method %@ not found for class %@", NSStringFromSelector(originalSelector), [self class]);
@@ -50,13 +46,11 @@
 	return YES;
 }
 
-+ (BOOL)swizzleClassMethod:(SEL)originalSelector withClassMethod:(SEL)newSelector error:(NSError *__autoreleasing *)error {
-	return [self swizzleMethod:originalSelector withMethod:newSelector error:error];
++ (BOOL)ba_swizzleClassMethod:(SEL)originalSelector withClassMethod:(SEL)newSelector error:(NSError *__autoreleasing *)error {
+	return [self ba_swizzleMethod:originalSelector withMethod:newSelector error:error];
 }
 
-#pragma mark - Copy method
-
-+ (BOOL)copyMethod:(SEL)newSelector toMethod:(SEL)dstSelector error:(NSError *__autoreleasing *)error {
++ (BOOL)ba_copyMethod:(SEL)newSelector toMethod:(SEL)dstSelector error:(NSError *__autoreleasing *)error {
     Method origMethod = class_getInstanceMethod(self, newSelector);
     if (!origMethod) {
         SetNSError(error, @"original method %@ not found for class %@", NSStringFromSelector(newSelector), [self class]);
@@ -79,11 +73,9 @@
     return YES;
 }
 
-+ (BOOL)copyClassMethod:(SEL)newSelector toClassMethod:(SEL)dstSelector error:(NSError *__autoreleasing *)error {
-    return [self copyMethod:newSelector toMethod:dstSelector error:error];
++ (BOOL)ba_copyClassMethod:(SEL)newSelector toClassMethod:(SEL)dstSelector error:(NSError *__autoreleasing *)error {
+    return [self ba_copyMethod:newSelector toMethod:dstSelector error:error];
 }
-
-#pragma mark - 待处理 @王涛
 
 static BOOL __method_swizzle(Class klass, SEL origSel, SEL altSel) {
     if (!klass)
@@ -167,15 +159,15 @@ static void __method_replace(Class toClass, Class fromClass, SEL selector) {
 
 // Implimentation
 
-+ (void)swizzleMethod:(SEL)originalSelector withMethod:(SEL)newSelector {
++ (void)ba_swizzleMethod:(SEL)originalSelector withMethod:(SEL)newSelector {
     __method_swizzle(self.class, originalSelector, newSelector);
 }
 
-+ (void)appendMethod:(SEL)newSelector fromClass:(Class)klass {
++ (void)ba_appendMethod:(SEL)newSelector fromClass:(Class)klass {
     __method_append(self.class, klass, newSelector);
 }
 
-+ (void)replaceMethod:(SEL)selector fromClass:(Class)klass {
++ (void)ba_replaceMethod:(SEL)selector fromClass:(Class)klass {
     __method_replace(self.class, klass, selector);
 }
 

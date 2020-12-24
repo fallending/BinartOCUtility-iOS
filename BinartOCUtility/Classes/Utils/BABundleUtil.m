@@ -16,7 +16,7 @@
 }
 
 + (UIImage *)ba_imageWithName:(NSString *)imageName bundleName:(NSString *)bundleName {
-    NSBundle *bundle = [self bundleWithName:bundleName];
+    NSBundle *bundle = [self ba_bundleWithName:bundleName];
     UIImage *(^ getBundleImage)(NSString *) = ^(NSString *res) {
         return  [UIImage imageNamed:imageName inBundle:bundle compatibleWithTraitCollection:nil]; // iOS 8.0
 //        NSString *imagePath = [bundle pathForResource:res ofType:@"png"];
@@ -28,7 +28,7 @@
 }
 
 + (UIImage *)ba_imageWithName:(NSString *)imageName bundleName:(NSString *)bundleName subPath:(NSString *)subPath {
-    NSBundle *bundle = [self bundleWithName:bundleName];
+    NSBundle *bundle = [self ba_bundleWithName:bundleName];
     UIImage *(^ getBundleImage)(NSString *) = ^(NSString *res) {
         NSString *imagePath = [bundle pathForResource:res ofType:@"png" inDirectory:subPath];
         return  [UIImage imageWithContentsOfFile:imagePath];

@@ -1,75 +1,5 @@
 #import "BAMacros.h"
 
-#pragma mark -
-
-@interface NSString ( Extension )
-
-- (NSString *)unwrap;
-- (NSString *)normalize;
-
-- (NSString *)repeat:(NSUInteger)count;
-
-- (BOOL)match:(NSString *)expression;
-- (BOOL)matchAnyOf:(NSArray *)array;
-- (NSString *)matchGroupAtIndex:(NSUInteger)idx forRegex:(NSString *)regex;
-- (NSArray *)allMatchesForRegex:(NSString *)regex;
-- (NSString *)stringByReplacingMatchesForRegex:(NSString *)regex withString:(NSString *)replacement;
-- (NSString *)stringByRegex:(NSString*)pattern substitution:(NSString*)substitute;
-
-/**  Return the char value at the specified index. */
-- (unichar)charAt:(int)index;
-- (int)indexOfChar:(unichar)ch;
-- (int)indexOfChar:(unichar)ch fromIndex:(int)index;
-- (int)indexOfString:(NSString *)str;
-- (int)indexOfString:(NSString *)str fromIndex:(int)index;
-- (int)lastIndexOfChar:(unichar)ch;
-- (int)lastIndexOfChar:(unichar)ch fromIndex:(int)index;
-- (int)lastIndexOfString:(NSString *)str;
-- (int)lastIndexOfString:(NSString *)str fromIndex:(int)index;
-
-- (NSString *)toLowerCase;
-- (NSString *)toUpperCase;
-
-- (NSString *)replaceAll:(NSString *)origin with:(NSString *)replacement;
-- (NSArray *)split:(NSString *)separator;
-+ (NSString *)reverseString:(NSString *)strSrc; // 反转字符串
-
-- (BOOL)empty;
-- (BOOL)notEmpty;
-
-- (BOOL)is:(NSString *)other;
-- (BOOL)isNot:(NSString *)other;
-- (BOOL)equalsIgnoreCase:(NSString *)anotherString;
-
-/**
- * Compares two strings lexicographically.
- * the value 0 if the argument string is equal to this string;
- * a value less than 0 if this string is lexicographically less than the string argument;
- * and a value greater than 0 if this string is lexicographically greater than the string argument.
- */
-- (NSComparisonResult)compareTo:(NSString *)anotherString;
-- (NSComparisonResult)compareToIgnoreCase:(NSString *)str;
-
-- (BOOL)isValueOf:(NSArray *)array;
-- (BOOL)isValueOf:(NSArray *)array caseInsens:(BOOL)caseInsens;
-
-- (NSString *)substringFromIndex:(NSUInteger)from untilString:(NSString *)string;
-- (NSString *)substringFromIndex:(NSUInteger)from untilString:(NSString *)string endOffset:(NSUInteger *)endOffset;
-
-- (NSString *)substringFromIndex:(NSUInteger)from untilCharset:(NSCharacterSet *)charset;
-- (NSString *)substringFromIndex:(NSUInteger)from untilCharset:(NSCharacterSet *)charset endOffset:(NSUInteger *)endOffset;
-
-- (NSString *)substringFromIndex:(int)beginIndex toIndex:(int)endIndex;
-
-- (NSUInteger)countFromIndex:(NSUInteger)from inCharset:(NSCharacterSet *)charset;
-
-- (NSArray<NSString *> *)rangeStringsOfSubString:(NSString *)subString;
-
-+ (NSString *)randomLength:(NSUInteger)len;
-
-@end
-
-
 @interface NSString ( BAUtil )
 
 - (BOOL)ba_startsWith:(NSString *)prefix;
@@ -104,5 +34,56 @@
 
 - (NSData *)ba_toData;
 - (NSString *)ba_MD5String;
+
+- (NSString *)ba_unwrap;
+- (NSString *)ba_normalize;
+
+- (NSString *)ba_repeat:(NSUInteger)count;
+
+- (BOOL)ba_match:(NSString *)expression;
+- (BOOL)ba_matchAnyOf:(NSArray *)array;
+- (NSString *)ba_matchGroupAtIndex:(NSUInteger)idx forRegex:(NSString *)regex;
+- (NSArray *)ba_allMatchesForRegex:(NSString *)regex;
+- (NSString *)ba_stringByReplacingMatchesForRegex:(NSString *)regex withString:(NSString *)replacement;
+- (NSString *)ba_stringByRegex:(NSString*)pattern substitution:(NSString*)substitute;
+
+/**  Return the char value at the specified index. */
+- (unichar)ba_charAt:(int)index;
+- (int)ba_indexOfChar:(unichar)ch;
+- (int)ba_indexOfChar:(unichar)ch fromIndex:(int)index;
+- (int)ba_indexOfString:(NSString *)str;
+- (int)ba_indexOfString:(NSString *)str fromIndex:(int)index;
+- (int)ba_lastIndexOfChar:(unichar)ch;
+- (int)ba_lastIndexOfChar:(unichar)ch fromIndex:(int)index;
+- (int)ba_lastIndexOfString:(NSString *)str;
+- (int)ba_lastIndexOfString:(NSString *)str fromIndex:(int)index;
+
+- (NSString *)ba_toLowerCase;
+- (NSString *)ba_toUpperCase;
+
+- (NSString *)ba_replaceAll:(NSString *)origin with:(NSString *)replacement;
++ (NSString *)ba_reverseString:(NSString *)strSrc; // 反转字符串
+
+- (BOOL)ba_equalsIgnoreCase:(NSString *)anotherString;
+
+- (NSComparisonResult)ba_compareTo:(NSString *)anotherString;
+- (NSComparisonResult)ba_compareToIgnoreCase:(NSString *)str;
+
+- (BOOL)ba_isValueOf:(NSArray *)array;
+- (BOOL)ba_isValueOf:(NSArray *)array caseInsens:(BOOL)caseInsens;
+
+- (NSString *)ba_substringFromIndex:(NSUInteger)from untilString:(NSString *)string;
+- (NSString *)ba_substringFromIndex:(NSUInteger)from untilString:(NSString *)string endOffset:(NSUInteger *)endOffset;
+
+- (NSString *)ba_substringFromIndex:(NSUInteger)from untilCharset:(NSCharacterSet *)charset;
+- (NSString *)ba_substringFromIndex:(NSUInteger)from untilCharset:(NSCharacterSet *)charset endOffset:(NSUInteger *)endOffset;
+
+- (NSString *)ba_substringFromIndex:(int)beginIndex toIndex:(int)endIndex;
+
+- (NSUInteger)ba_countFromIndex:(NSUInteger)from inCharset:(NSCharacterSet *)charset;
+
+- (NSArray<NSString *> *)ba_rangeStringsOfSubString:(NSString *)subString;
+
++ (NSString *)ba_randomLength:(NSUInteger)len;
 
 @end

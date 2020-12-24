@@ -3,38 +3,25 @@
 
 @implementation NSData ( BAExtension )
 
-- (NSString *)string {
-    return [[NSString alloc] initWithData:self encoding:NSStringEncodingConversionAllowLossy];
-}
-
-/**
- *  @brief  NSData 转成UTF8 字符串
- *
- *  @return 转成UTF8 字符串
- */
-- (NSString *)utf8String {
-    return [[NSString alloc] initWithData:self encoding:NSUTF8StringEncoding];
-}
-
-- (BOOL)isJPEG {
+- (BOOL)ba_isJPEG {
     uint8_t a, b, c, d;
     [self getHeader:&a b:&b c:&c d:&d];
     
     return a == 0xFF && b == 0xD8 && c == 0xFF && (d == 0xE0 || d == 0xE1 || d == 0xE8);
 }
 
-- (BOOL)isPNG {
+- (BOOL)ba_isPNG {
     uint8_t a, b, c, d;
     [self getHeader:&a b:&b c:&c d:&d];
     
     return a == 0x89 && b == 0x50 && c == 0x4E && d == 0x47;
 }
 
-- (BOOL)isImage {
-    return self.isJPEG || self.isPNG;
+- (BOOL)ba_isImage {
+    return self.ba_isJPEG || self.ba_isPNG;
 }
 
-- (BOOL)isMPEG4 {
+- (BOOL)ba_isMPEG4 {
     uint8_t a, b, c, d;
     [self getBytes:&a range:NSMakeRange(4, 1)];
     [self getBytes:&b range:NSMakeRange(5, 1)];
@@ -44,11 +31,11 @@
     return a == 0x66 && b == 0x74 && c == 0x79 && d == 0x70;
 }
 
-- (BOOL)isMedia {
-    return self.isImage || self.isMPEG4;
+- (BOOL)ba_isMedia {
+    return self.ba_isImage || self.ba_isMPEG4;
 }
 
-- (BOOL)isCompressed {
+- (BOOL)ba_isCompressed {
     uint8_t a, b, c, d;
     [self getHeader:&a b:&b c:&c d:&d];
     
@@ -63,11 +50,11 @@
     [self getBytes:d range:NSMakeRange(3, 1)];
 }
 
-- (NSString *)appropriateFileExtension {
-    if (self.isJPEG) return @".jpg";
-    if (self.isPNG) return @".png";
-    if (self.isMPEG4) return @".mp4";
-    if (self.isCompressed) return @".zip";
+- (NSString *)ba_appropriateFileExtension {
+    if (self.ba_isJPEG) return @".jpg";
+    if (self.ba_isPNG) return @".png";
+    if (self.ba_isMPEG4) return @".mp4";
+    if (self.ba_isCompressed) return @".zip";
     return @".dat";
 }
 
@@ -75,8 +62,7 @@
     if (![self length]) return nil;
     NSString *encoded = nil;
 #if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_9 || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0
-    if (![NSData instancesRespondToSelector:@selector(base64EncodedStringWithOptions:)])
-    {
+    if (![NSData instancesRespondToSelector:@selector(base64EncodedStringWithOptions:)]) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
         encoded = [self base64Encoding];
@@ -118,26 +104,6 @@
     
     return result;
 }
-
-+ (NSData *)ba_base64EncodedString:(NSString *)string {
-    if (![string length]) return nil;
-    NSData *decoded = nil;
-#if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_9 || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0
-    if (![NSData instancesRespondToSelector:@selector(initWithBase64EncodedString:options:)])
-    {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        decoded = [[self alloc] initWithBase64Encoding:[string stringByReplacingOccurrencesOfString:@"[^A-Za-z0-9+/=]" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, [string length])]];
-#pragma clang diagnostic pop
-    }
-    else
-#endif
-    {
-        decoded = [[self alloc] initWithBase64EncodedString:string options:NSDataBase64DecodingIgnoreUnknownCharacters];
-    }
-    return [decoded length]? decoded: nil;
-}
-
 
 - (NSString *)ba_base64EncodedString {
     return [self ba_base64EncodedStringWithWrapWidth:0];
@@ -186,6 +152,25 @@
 
 @implementation BADataUtil
 
+
++ (NSData *)ba_base64EncodedString:(NSString *)string {
+    if (![string length]) return nil;
+    NSData *decoded = nil;
+#if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_9 || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0
+    if (![NSData instancesRespondToSelector:@selector(initWithBase64EncodedString:options:)])
+    {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        decoded = [[self alloc] initWithBase64Encoding:[string stringByReplacingOccurrencesOfString:@"[^A-Za-z0-9+/=]" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, [string length])]];
+#pragma clang diagnostic pop
+    }
+    else
+#endif
+    {
+        decoded = [[self alloc] initWithBase64EncodedString:string options:NSDataBase64DecodingIgnoreUnknownCharacters];
+    }
+    return [decoded length]? decoded: nil;
+}
 
 
 @end

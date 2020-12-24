@@ -6,8 +6,6 @@
 
 #import "_pragma_push.h"
 
-#pragma mark -
-
 void dumpClass(Class cls) {
     const char *className = class_getName(cls);
     
@@ -64,11 +62,252 @@ void dumpClass(Class cls) {
     free(classMethodList);
 }
 
-// MARK: -
-
 @implementation NSObject ( Runtime )
 
-+ (NSArray *)loadedClassNames {
++ (Class)ba_baseClass {
+    return [NSObject class];
+}
+
+- (void)ba_deepEqualsTo:(id)obj {
+    Class baseClass = [[self class] ba_baseClass];
+    if ( nil == baseClass ) {
+        baseClass = [NSObject class];
+    }
+    
+    for ( Class clazzType = [self class]; clazzType != baseClass; ) {
+        unsigned int        propertyCount = 0;
+        objc_property_t *    properties = class_copyPropertyList( clazzType, &propertyCount );
+        
+        for ( NSUInteger i = 0; i < propertyCount; i++ ) {
+            const char *    name = property_getName(properties[i]);
+            const char *    attr = property_getAttributes(properties[i]);
+            
+            if ( [BAEncoding isReadOnly:attr] ) {
+                continue;
+            }
+            
+            NSString * propertyName = [NSString stringWithCString:name encoding:NSUTF8StringEncoding];
+            NSObject * propertyValue = [(NSObject *)obj valueForKey:propertyName];
+            
+            [self setValue:propertyValue forKey:propertyName];
+        }
+        
+        free( properties );
+        
+        clazzType = class_getSuperclass( clazzType );
+        if ( nil == clazzType )
+            break;
+    }
+}
+
+- (void)ba_deepCopyFrom:(id)obj {
+    if ( nil == obj ) {
+        return;
+    }
+    
+    Class baseClass = [[obj class] ba_baseClass];
+    if ( nil == baseClass ) {
+        baseClass = [NSObject class];
+    }
+    
+    for ( Class clazzType = [obj class]; clazzType != baseClass; ) {
+        unsigned int        propertyCount = 0;
+        objc_property_t *    properties = class_copyPropertyList( clazzType, &propertyCount );
+        
+        for ( NSUInteger i = 0; i < propertyCount; i++ ) {
+            const char *    name = property_getName(properties[i]);
+            const char *    attr = property_getAttributes(properties[i]);
+            
+            if ( [BAEncoding isReadOnly:attr] ) {
+                continue;
+            }
+            
+            NSString * propertyName = [NSString stringWithCString:name encoding:NSUTF8StringEncoding];
+            NSObject * propertyValue = [(NSObject *)obj valueForKey:propertyName];
+            
+            [self setValue:propertyValue forKey:propertyName];
+        }
+        
+        free( properties );
+        
+        clazzType = class_getSuperclass( clazzType );
+        if ( nil == clazzType )
+            break;
+    }
+}
+
+- (id)ba_clone {
+    id newObject = [[[self class] alloc] init];
+    
+    if ( newObject ) {
+        [newObject ba_deepCopyFrom:self];
+    }
+    
+    return newObject;
+}
+
+- (BOOL)ba_shallowCopy:(NSObject *)obj {
+    Class currentClass = [self class];
+    Class instanceClass = [obj class];
+    
+    if (self == obj) { //相同实例
+        return NO;
+    }
+    
+    if (![obj isMemberOfClass:currentClass] ) { //不是当前类的实例
+        return NO;
+    }
+    
+    while (instanceClass != [NSObject class]) {
+        unsigned int propertyListCount = 0;
+        objc_property_t *propertyList = class_copyPropertyList(currentClass, &propertyListCount);
+        for (int i = 0; i < propertyListCount; i++) {
+            objc_property_t property = propertyList[i];
+            const char *property_name = property_getName(property);
+            NSString *propertyName = [NSString stringWithCString:property_name encoding:NSUTF8StringEncoding];
+            
+            //check if property is dynamic and readwrite
+            char *dynamic = property_copyAttributeValue(property, "D");
+            char *readonly = property_copyAttributeValue(property, "R");
+            if (propertyName && !readonly) {
+                id propertyValue = [obj valueForKey:propertyName];
+                [self setValue:propertyValue forKey:propertyName];
+            }
+            free(dynamic);
+            free(readonly);
+        }
+        free(propertyList);
+        instanceClass = class_getSuperclass(instanceClass);
+    }
+    
+    return YES;
+}
+
+- (BOOL)ba_deepCopy:(NSObject *)obj {
+    Class currentClass = [self class];
+    Class instanceClass = [obj class];
+    
+    if (self == obj) { // 相同实例
+        return NO;
+    }
+    
+    if (![obj isMemberOfClass:currentClass] ) { // 不是当前类的实例
+        return NO;
+    }
+    
+    while (instanceClass != [NSObject class]) {
+        unsigned int propertyListCount = 0;
+        objc_property_t *propertyList = class_copyPropertyList(currentClass, &propertyListCount);
+        for (int i = 0; i < propertyListCount; i++) {
+            objc_property_t property = propertyList[i];
+            const char *property_name = property_getName(property);
+            NSString *propertyName = [NSString stringWithCString:property_name encoding:NSUTF8StringEncoding];
+            
+            //check if property is dynamic and readwrite
+            char *dynamic = property_copyAttributeValue(property, "D");
+            char *readonly = property_copyAttributeValue(property, "R");
+            if (propertyName && !readonly) {
+                id propertyValue = [obj valueForKey:propertyName];
+                Class propertyValueClass = [propertyValue class];
+                BOOL flag = [NSObject ba_isNSObjectClass:propertyValueClass];
+                if (flag) {
+                    if ([propertyValue conformsToProtocol:@protocol(NSCopying)]) {
+                        NSObject *copyValue = [propertyValue copy];
+                        [self setValue:copyValue forKey:propertyName];
+                    }else{
+                        NSObject *copyValue = [[[propertyValue class]alloc]init];
+                        [obj ba_deepCopy:propertyValue];
+                        [self setValue:copyValue forKey:propertyName];
+                    }
+                }else{
+                    [self setValue:propertyValue forKey:propertyName];
+                }
+            }
+            free(dynamic);
+            free(readonly);
+        }
+        free(propertyList);
+        instanceClass = class_getSuperclass(instanceClass);
+    }
+    
+    return YES;
+}
+
+- (id)ba_deepCopy {
+    id obj = nil;
+    @try {
+        obj = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:self]];
+    }
+    
+    @catch (NSException *exception) {
+        NSLog(@"%@", exception);
+    }
+    return obj;
+}
+
++ (BOOL)ba_isNullValue:(id)value {
+    return ((NSNull *)value == [NSNull null] ||
+            [@"<null>" isEqualToString:(NSString *)value] ||
+            [@"(null)" isEqualToString:(NSString *)value] ||
+            [@"null" isEqualToString:(NSString *)value] ||
+            value == nil);
+}
+
+- (id)ba_getObjectInternal:(id)obj {
+    if([obj isKindOfClass:[NSString class]]
+       || [obj isKindOfClass:[NSNumber class]]
+       || [obj isKindOfClass:[NSNull class]]) {
+        return obj;
+    }
+    
+    if([obj isKindOfClass:[NSArray class]]) {
+        NSArray *objarr = obj;
+        NSMutableArray *arr = [NSMutableArray arrayWithCapacity:objarr.count];
+        
+        for(int i = 0; i < objarr.count; i++) {
+            [arr setObject:[self ba_getObjectInternal:[objarr objectAtIndex:i]] atIndexedSubscript:i];
+        }
+        
+        return arr;
+    }
+    
+    if([obj isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *objdic = obj;
+        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithCapacity:[objdic count]];
+        
+        for(NSString *key in objdic.allKeys) {
+            [dic setObject:[self ba_getObjectInternal:[objdic objectForKey:key]] forKey:key];
+        }
+        
+        return dic;
+    }
+    
+    return [self ba_getObjectData:obj];
+}
+
+- (NSDictionary*)ba_getObjectData:(NSObject *)obj {
+    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+    unsigned int propsCount;
+    objc_property_t *props = class_copyPropertyList([obj class], &propsCount);
+    
+    for(int i = 0; i < propsCount; i++) {
+        objc_property_t prop = props[i];
+        NSString *propName = [NSString stringWithUTF8String:property_getName(prop)];
+        id value = [obj valueForKey:propName];
+        if(value == nil) {
+            value = [NSNull null];
+        } else {
+            value = [self ba_getObjectInternal:value];
+            
+        }
+        
+        [dic setObject:value forKey:propName];
+    }
+    
+    return dic;
+}
+
++ (NSArray *)ba_loadedClassNames {
     static dispatch_once_t		once;
     static NSMutableArray *		classNames;
     
@@ -102,7 +341,7 @@ void dumpClass(Class cls) {
     return classNames;
 }
 
-+ (__unsafe_unretained Class *)loadedClasses {
++ (__unsafe_unretained Class *)ba_loadedClasses {
     int numClasses;
     Class *classes = NULL;
     
@@ -117,18 +356,18 @@ void dumpClass(Class cls) {
     return classes;
 }
 
-+ (void)enumerateloadedClassesUsingBlock:(void (^)(__unsafe_unretained Class))block {
-    for ( NSString * className in [self loadedClassNames] ) {
++ (void)ba_enumerateloadedClassesUsingBlock:(void (^)(__unsafe_unretained Class))block {
+    for ( NSString * className in [self ba_loadedClassNames] ) {
         Class classType = NSClassFromString( className );
         
         if (block) block(classType);
     }
 }
 
-+ (NSArray *)subClasses {
++ (NSArray *)ba_subClasses {
     NSMutableArray * results = [[NSMutableArray alloc] init];
     
-    for ( NSString * className in [self loadedClassNames] ) {
+    for ( NSString * className in [self ba_loadedClassNames] ) {
         Class classType = NSClassFromString( className );
         if ( classType == self ) {
             continue;
@@ -148,11 +387,11 @@ void dumpClass(Class cls) {
     return results;
 }
 
-+ (NSArray *)methods {
-    return [self methodsUntilClass:[self superclass]];
++ (NSArray *)ba_methods {
+    return [self ba_methodsUntilClass:[self superclass]];
 }
 
-+ (NSArray *)methodsUntilClass:(Class)baseClass {
++ (NSArray *)ba_methodsUntilClass:(Class)baseClass {
     NSMutableArray * methodNames = [[NSMutableArray alloc] init];
     
     Class thisClass = self;
@@ -190,12 +429,12 @@ void dumpClass(Class cls) {
     return methodNames;
 }
 
-+ (NSArray *)methodsWithPrefix:(NSString *)prefix {
-    return [self methodsWithPrefix:prefix untilClass:[self superclass]];
++ (NSArray *)ba_methodsWithPrefix:(NSString *)prefix {
+    return [self ba_methodsWithPrefix:prefix untilClass:[self superclass]];
 }
 
-+ (NSArray *)methodsWithPrefix:(NSString *)prefix untilClass:(Class)baseClass {
-    NSArray * methods = [self methodsUntilClass:baseClass];
++ (NSArray *)ba_methodsWithPrefix:(NSString *)prefix untilClass:(Class)baseClass {
+    NSArray * methods = [self ba_methodsUntilClass:baseClass];
     
     if ( nil == methods || 0 == methods.count ) {
         return nil;
@@ -222,11 +461,11 @@ void dumpClass(Class cls) {
     return result;
 }
 
-+ (NSArray *)properties {
-    return [self propertiesUntilClass:[self superclass]];
++ (NSArray *)ba_properties {
+    return [self ba_propertiesUntilClass:[self superclass]];
 }
 
-+ (NSArray *)propertiesUntilClass:(Class)baseClass {
++ (NSArray *)ba_propertiesUntilClass:(Class)baseClass {
     NSMutableArray * propertyNames = [[NSMutableArray alloc] init];
     
     Class thisClass = self;
@@ -261,12 +500,12 @@ void dumpClass(Class cls) {
     return propertyNames;
 }
 
-+ (NSArray *)propertiesWithPrefix:(NSString *)prefix {
-    return [self propertiesWithPrefix:prefix untilClass:[self superclass]];
++ (NSArray *)ba_propertiesWithPrefix:(NSString *)prefix {
+    return [self ba_propertiesWithPrefix:prefix untilClass:[self superclass]];
 }
 
-+ (NSArray *)propertiesWithPrefix:(NSString *)prefix untilClass:(Class)baseClass {
-    NSArray * properties = [self propertiesUntilClass:baseClass];
++ (NSArray *)ba_propertiesWithPrefix:(NSString *)prefix untilClass:(Class)baseClass {
+    NSArray * properties = [self ba_propertiesUntilClass:baseClass];
     
     if ( nil == properties || 0 == properties.count ) {
         return nil;
@@ -293,7 +532,7 @@ void dumpClass(Class cls) {
     return result;
 }
 
-- (NSDictionary *)propertyDictionary {
+- (NSDictionary *)ba_propertyDictionary {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     unsigned int outCount;
     objc_property_t *props = class_copyPropertyList([self class], &outCount);
@@ -308,10 +547,10 @@ void dumpClass(Class cls) {
     return dict;
 }
 
-+ (NSArray *)classesWithProtocolName:(NSString *)protocolName {
++ (NSArray *)ba_classesWithProtocolName:(NSString *)protocolName {
     NSMutableArray *results = [[NSMutableArray alloc] init];
     Protocol * protocol = NSProtocolFromString(protocolName);
-    for ( NSString *className in [self loadedClassNames] ) {
+    for ( NSString *className in [self ba_loadedClassNames] ) {
         Class classType = NSClassFromString( className );
         if ( classType == self )
             continue;
@@ -327,19 +566,19 @@ void dumpClass(Class cls) {
 
 // MARK: -
 
-- (BOOL)respondsToSelector:(SEL)selector untilClass:(Class)stopClass {
-    return [self.class instancesRespondToSelector:selector untilClass:stopClass];
+- (BOOL)ba_respondsToSelector:(SEL)selector untilClass:(Class)stopClass {
+    return [self.class ba_instancesRespondToSelector:selector untilClass:stopClass];
 }
 
-- (BOOL)superRespondsToSelector:(SEL)selector {
+- (BOOL)ba_superRespondsToSelector:(SEL)selector {
     return [self.superclass instancesRespondToSelector:selector];
 }
 
-- (BOOL)superRespondsToSelector:(SEL)selector untilClass:(Class)stopClass {
-    return [self.superclass instancesRespondToSelector:selector untilClass:stopClass];
+- (BOOL)ba_superRespondsToSelector:(SEL)selector untilClass:(Class)stopClass {
+    return [self.superclass ba_instancesRespondToSelector:selector untilClass:stopClass];
 }
 
-+ (BOOL)instancesRespondToSelector:(SEL)selector untilClass:(Class)stopClass {
++ (BOOL)ba_instancesRespondToSelector:(SEL)selector untilClass:(Class)stopClass {
     BOOL __block (^ __weak block_self)(Class klass, SEL selector, Class stopClass);
     BOOL (^block)(Class klass, SEL selector, Class stopClass) = [^
                                                                  (Class klass, SEL selector, Class stopClass)
@@ -363,7 +602,7 @@ void dumpClass(Class cls) {
     return block(self.class, selector, stopClass);
 }
 
-+ (id)touchSelector:(SEL)selector {
++ (id)ba_touchSelector:(SEL)selector {
     id obj = nil;
     if([self respondsToSelector:selector]) {
 #pragma clang diagnostic push
@@ -374,7 +613,7 @@ void dumpClass(Class cls) {
     return obj;
 }
 
-- (id)touchSelector:(SEL)selector {
+- (id)ba_touchSelector:(SEL)selector {
     id obj = nil;
     if([self respondsToSelector:selector]) {
 #pragma clang diagnostic push
@@ -385,13 +624,11 @@ void dumpClass(Class cls) {
     return obj;
 }
 
-#pragma mark - 
-
-- (NSArray *)propertyKeys {
-    return [[self class] propertyKeys];
+- (NSArray *)ba_propertyKeys {
+    return [[self class] ba_propertyKeys];
 }
 
-+ (NSArray *)propertyKeys {
++ (NSArray *)ba_propertyKeys {
     unsigned int propertyCount = 0;
     objc_property_t * properties = class_copyPropertyList(self, &propertyCount);
     NSMutableArray * propertyNames = [NSMutableArray array];
@@ -404,11 +641,11 @@ void dumpClass(Class cls) {
     return propertyNames;
 }
 
-- (NSArray *)propertiesInfo {
-    return [[self class] propertiesInfo];
+- (NSArray *)ba_propertiesInfo {
+    return [[self class] ba_propertiesInfo];
 }
 
-+ (NSArray *)propertiesInfo {
++ (NSArray *)ba_propertiesInfo {
     NSMutableArray *propertieArray = [NSMutableArray array];
     
     unsigned int propertyCount;
@@ -417,7 +654,7 @@ void dumpClass(Class cls) {
     for (int i = 0; i < propertyCount; i++) {
         [propertieArray addObject:({
             
-            NSDictionary *dictionary = [self dictionaryWithProperty:properties[i]];
+            NSDictionary *dictionary = [self ba_dictionaryWithProperty:properties[i]];
             
             dictionary;
         })];
@@ -428,10 +665,10 @@ void dumpClass(Class cls) {
     return propertieArray;
 }
 
-+ (NSArray *)propertiesWithCodeFormat {
++ (NSArray *)ba_propertiesWithCodeFormat {
     NSMutableArray *array = [NSMutableArray array];
     
-    NSArray *properties = [[self class] propertiesInfo];
+    NSArray *properties = [[self class] ba_propertiesInfo];
     
     for (NSDictionary *item in properties) {
         NSMutableString *format = ({
@@ -476,7 +713,7 @@ void dumpClass(Class cls) {
 /**
  * 相关数据结构：Method, IMP, SEL, NSMethodSignature
  */
-+ (NSArray *)methodsInfo {
++ (NSArray *)ba_methodsInfo {
     u_int               count;
     NSMutableArray *methodList = [NSMutableArray array];
     Method *methods = class_copyMethodList([self class], &count);
@@ -496,11 +733,11 @@ void dumpClass(Class cls) {
         for (int index=0; index<argumentsCount; index++) {
             char *arg = method_copyArgumentType(method,index);
             NSString *argString = [NSString stringWithCString:arg encoding:NSUTF8StringEncoding];
-            [arguments addObject:[[self class] decodeType:arg]];
+            [arguments addObject:[[self class] ba_decodeType:arg]];
         }
         
-        NSString *returnTypeString =[[self class] decodeType:returnType];
-        NSString *encodeString = [[self class] decodeType:encoding];
+        NSString *returnTypeString =[[self class] ba_decodeType:returnType];
+        NSString *encodeString = [[self class] ba_decodeType:encoding];
         NSString *nameString = [NSString  stringWithCString:sel_getName(name) encoding:NSUTF8StringEncoding];
         
         [info setObject:arguments forKey:@"arguments"];
@@ -517,11 +754,11 @@ void dumpClass(Class cls) {
     return methodList;
 }
 
-- (NSDictionary *)protocols {
-    return [[self class] protocols];
+- (NSDictionary *)ba_protocols {
+    return [[self class] ba_protocols];
 }
 
-+ (NSDictionary *)protocols {
++ (NSDictionary *)ba_protocols {
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
     
     unsigned int count;
@@ -537,8 +774,7 @@ void dumpClass(Class cls) {
             
             unsigned int superProtocolCount;
             Protocol * __unsafe_unretained * superProtocols = protocol_copyProtocolList(protocol, &superProtocolCount);
-            for (int ii = 0; ii < superProtocolCount; ii++)
-            {
+            for (int ii = 0; ii < superProtocolCount; ii++) {
                 Protocol *superProtocol = superProtocols[ii];
                 
                 NSString *superProtocolName = [NSString stringWithCString:protocol_getName(superProtocol) encoding:NSUTF8StringEncoding];
@@ -557,12 +793,12 @@ void dumpClass(Class cls) {
     return dictionary;
 }
 
-+ (NSArray *)instanceVariable {
++ (NSArray *)ba_instanceVariable {
     unsigned int outCount;
     Ivar *ivars = class_copyIvarList([self class], &outCount);
     NSMutableArray *result = [NSMutableArray array];
     for (int i = 0; i < outCount; i++) {
-        NSString *type = [[self class] decodeType:ivar_getTypeEncoding(ivars[i])];
+        NSString *type = [[self class] ba_decodeType:ivar_getTypeEncoding(ivars[i])];
         NSString *name = [NSString stringWithCString:ivar_getName(ivars[i]) encoding:NSUTF8StringEncoding];
         NSString *ivarDescription = [NSString stringWithFormat:@"%@ %@", type, name];
         [result addObject:ivarDescription];
@@ -571,19 +807,19 @@ void dumpClass(Class cls) {
     return result.count ? [result copy] : nil;
 }
 
-- (BOOL)hasPropertyForKey:(NSString *)key {
+- (BOOL)ba_hasPropertyForKey:(NSString *)key {
     objc_property_t property = class_getProperty([self class], [key UTF8String]);
     return (BOOL)property;
 }
 
-- (BOOL)hasIvarForKey:(NSString *)key {
+- (BOOL)ba_hasIvarForKey:(NSString *)key {
     Ivar ivar = class_getInstanceVariable([self class], [key UTF8String]);
     return (BOOL)ivar;
 }
 
 #pragma mark -- help
 
-+ (NSDictionary *)dictionaryWithProperty:(objc_property_t)property {
++ (NSDictionary *)ba_dictionaryWithProperty:(objc_property_t)property {
     NSMutableDictionary *result = [NSMutableDictionary dictionary];
     
     //name
@@ -752,7 +988,7 @@ void dumpClass(Class cls) {
     return result;
 }
 
-+ (NSString *)decodeType:(const char *)cString {
++ (NSString *)ba_decodeType:(const char *)cString {
     if (!strcmp(cString, @encode(char)))
         return @"char";
     if (!strcmp(cString, @encode(int)))
@@ -824,16 +1060,13 @@ void dumpClass(Class cls) {
     } else {
         if ([[result substringToIndex:1] isEqualToString:@"^"]) {
             result = [NSString stringWithFormat:@"%@ *",
-                      [NSString decodeType:[[result substringFromIndex:1] cStringUsingEncoding:NSUTF8StringEncoding]]];
+                      [NSString ba_decodeType:[[result substringFromIndex:1] cStringUsingEncoding:NSUTF8StringEncoding]]];
         }
     }
     return result;
 }
 
-
-#pragma mark -
-
-- (NSArray *)conformedProtocols {
+- (NSArray *)ba_conformedProtocols {
     unsigned int outCount = 0;
     Class obj_class = [self class];
     __unsafe_unretained Protocol **protocols = class_copyProtocolList(obj_class, &outCount);
@@ -854,7 +1087,7 @@ void dumpClass(Class cls) {
     return protocol_array;
 }
 
-- (NSArray *)allIvars {
+- (NSArray *)ba_allIvars {
     unsigned int count = 0;
     Ivar *ivar_ptr = NULL;
     ivar_ptr = class_copyIvarList([self class], &count);
@@ -874,7 +1107,7 @@ void dumpClass(Class cls) {
     return all;
 }
 
-- (NSArray *)parents {
+- (NSArray *)ba_parents {
     Class selfClass = object_getClass(self);
     NSMutableArray *all = [[NSMutableArray alloc] initWithCapacity:0];
     
@@ -888,23 +1121,23 @@ void dumpClass(Class cls) {
     return all;
 }
 
-- (NSString *)className {
+- (NSString *)ba_className {
     return NSStringFromClass(object_getClass(self));
 }
 
-+ (NSString *)className {
++ (NSString *)ba_className {
     return NSStringFromClass([self class]);
 }
 
-- (NSString *)superClassName {
+- (NSString *)ba_superClassName {
     return NSStringFromClass([self superclass]);
 }
 
-+ (NSString *)superClassName {
++ (NSString *)ba_superClassName {
     return NSStringFromClass([self superclass]);
 }
 
-+ (BOOL)isNSObjectClass:(Class)clazz {
++ (BOOL)ba_isNSObjectClass:(Class)clazz {
     BOOL flag = class_conformsToProtocol(clazz, @protocol(NSObject));
     if (flag) {
         return flag;
@@ -913,7 +1146,7 @@ void dumpClass(Class cls) {
         if (!superClass) {
             return NO;
         } else {
-            return  [NSObject isNSObjectClass:superClass];
+            return  [NSObject ba_isNSObjectClass:superClass];
         }
     }
 }
@@ -1252,8 +1485,7 @@ static const char *__BlockSignature__(id blockObj) {
 
 }
 
-- (id)getEncodedReturnValue
-{
+- (id)getEncodedReturnValue {
     id result = nil;
     NSString *type = [NSString stringWithUTF8String:[self.methodSignature methodReturnType]];
     
@@ -1261,85 +1493,85 @@ static const char *__BlockSignature__(id blockObj) {
         void *returnVal = nil;
         [self getReturnValue:&returnVal];
         result = (__bridge NSObject *)returnVal;
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(CGRect)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(CGRect)]]){
         CGRect returnVal;
         [self getReturnValue:&returnVal];
         result = [NSValue valueWithCGRect:returnVal];
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(CGSize)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(CGSize)]]){
         CGSize returnVal;
         [self getReturnValue:&returnVal];
         result = [NSValue valueWithCGSize:returnVal];
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(CGPoint)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(CGPoint)]]){
         CGPoint returnVal;
         [self getReturnValue:&returnVal];
         result = [NSValue valueWithCGPoint:returnVal];
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(CGAffineTransform)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(CGAffineTransform)]]){
         CGAffineTransform returnVal;
         [self getReturnValue:&returnVal];
         result = [NSValue valueWithCGAffineTransform:returnVal];
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(NSInteger)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(NSInteger)]]){
         NSInteger returnVal;
         [self getReturnValue:&returnVal];
         result = [NSNumber numberWithInteger:returnVal];
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(NSUInteger)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(NSUInteger)]]){
         NSUInteger returnVal;
         [self getReturnValue:&returnVal];
         result = [NSNumber numberWithUnsignedInteger:returnVal];
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(long)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(long)]]){
         long returnVal;
         [self getReturnValue:&returnVal];
         result = [NSNumber numberWithLong:returnVal];
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(unsigned)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(unsigned)]]){
         unsigned returnVal;
         [self getReturnValue:&returnVal];
         result = [NSNumber numberWithUnsignedLong:returnVal];
 
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(long long)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(long long)]]){
         long long returnVal;
         [self getReturnValue:&returnVal];
         result = [NSNumber numberWithLongLong:returnVal];
 
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(int)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(int)]]){
         int returnVal;
         [self getReturnValue:&returnVal];
         result = [NSNumber numberWithInt:returnVal];
 
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(CGFloat)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(CGFloat)]]){
         CGFloat returnVal;
         [self getReturnValue:&returnVal];
         result = [NSNumber numberWithDouble:returnVal];
 
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(float)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(float)]]){
         float returnVal;
         [self getReturnValue:&returnVal];
         result = [NSNumber numberWithFloat:returnVal];
 
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(double)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(double)]]){
         double returnVal;
         [self getReturnValue:&returnVal];
         result = [NSNumber numberWithDouble:returnVal];
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(BOOL)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(BOOL)]]){
         BOOL returnVal;
         [self getReturnValue:&returnVal];
         result = [NSNumber numberWithBool:returnVal];
 
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(CLLocationCoordinate2D)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(CLLocationCoordinate2D)]]){
         CLLocationCoordinate2D returnVal;
         [self getReturnValue:&returnVal];
         result = [NSValue valueWithMKCoordinate:returnVal];
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(MKCoordinateSpan)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(MKCoordinateSpan)]]){
         MKCoordinateSpan returnVal;
         [self getReturnValue:&returnVal];
         result = [NSValue valueWithMKCoordinateSpan:returnVal];
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(CATransform3D)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(CATransform3D)]]){
         CATransform3D returnVal;
         [self getReturnValue:&returnVal];
         result = [NSValue valueWithCATransform3D:returnVal];
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(NSRange)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(NSRange)]]){
         NSRange returnVal;
         [self getReturnValue:&returnVal];
         result = [NSValue valueWithRange:returnVal];
-    }else if ([type isEqualToString:[NSInvocation encodeType:@encode(UIEdgeInsets)]]){
+    } else if ([type isEqualToString:[NSInvocation encodeType:@encode(UIEdgeInsets)]]){
         UIEdgeInsets returnVal;
         [self getReturnValue:&returnVal];
         result = [NSValue valueWithUIEdgeInsets:returnVal];
@@ -1430,305 +1662,45 @@ static const char *__BlockSignature__(id blockObj) {
         
         if (argType[0] == '@') {                                //id and block
             ARG_GET_SET(id);
-        }else if (strcmp(argType, @encode(Class)) == 0 ){       //Class
+        } else if (strcmp(argType, @encode(Class)) == 0 ){       //Class
             ARG_GET_SET(Class);
-        }else if (strcmp(argType, @encode(IMP)) == 0 ){         //IMP
+        } else if (strcmp(argType, @encode(IMP)) == 0 ){         //IMP
             ARG_GET_SET(IMP);
-        }else if (strcmp(argType, @encode(SEL)) == 0) {         //SEL
+        } else if (strcmp(argType, @encode(SEL)) == 0) {         //SEL
             ARG_GET_SET(SEL);
-        }else if (strcmp(argType, @encode(double)) == 0){       //
+        } else if (strcmp(argType, @encode(double)) == 0){       //
             ARG_GET_SET(double);
-        }else if (strcmp(argType, @encode(float)) == 0){
+        } else if (strcmp(argType, @encode(float)) == 0){
             float val = 0;
             val = (float)va_arg(args,double);
             [invocation setArgument:&val atIndex:1 + i];
-        }else if (argType[0] == '^'){                           //pointer ( andconst pointer)
+        } else if (argType[0] == '^'){                           //pointer ( andconst pointer)
             ARG_GET_SET(void*);
-        }else if (strcmp(argType, @encode(char *)) == 0) {      //char* (and const char*)
+        } else if (strcmp(argType, @encode(char *)) == 0) {      //char* (and const char*)
             ARG_GET_SET(char *);
-        }else if (strcmp(argType, @encode(unsigned long)) == 0) {
+        } else if (strcmp(argType, @encode(unsigned long)) == 0) {
             ARG_GET_SET(unsigned long);
-        }else if (strcmp(argType, @encode(unsigned long long)) == 0) {
+        } else if (strcmp(argType, @encode(unsigned long long)) == 0) {
             ARG_GET_SET(unsigned long long);
-        }else if (strcmp(argType, @encode(long)) == 0) {
+        } else if (strcmp(argType, @encode(long)) == 0) {
             ARG_GET_SET(long);
-        }else if (strcmp(argType, @encode(long long)) == 0) {
+        } else if (strcmp(argType, @encode(long long)) == 0) {
             ARG_GET_SET(long long);
-        }else if (strcmp(argType, @encode(int)) == 0) {
+        } else if (strcmp(argType, @encode(int)) == 0) {
             ARG_GET_SET(int);
-        }else if (strcmp(argType, @encode(unsigned int)) == 0) {
+        } else if (strcmp(argType, @encode(unsigned int)) == 0) {
             ARG_GET_SET(unsigned int);
-        }else if (strcmp(argType, @encode(BOOL)) == 0 || strcmp(argType, @encode(bool)) == 0
+        } else if (strcmp(argType, @encode(BOOL)) == 0 || strcmp(argType, @encode(bool)) == 0
                   || strcmp(argType, @encode(char)) == 0 || strcmp(argType, @encode(unsigned char)) == 0
                   || strcmp(argType, @encode(short)) == 0 || strcmp(argType, @encode(unsigned short)) == 0) {
             ARG_GET_SET(int);
-        }else{                  //struct union and array
+        } else {                  //struct union and array
             assert(false && "struct union array unsupported!");
         }
     }
     va_end(args);
     return invocation;
 }
-@end
-
-@implementation NSObject(Extension)
-
-+ (Class)baseClass {
-    return [NSObject class];
-}
-
-- (void)deepEqualsTo:(id)obj {
-    Class baseClass = [[self class] baseClass];
-    if ( nil == baseClass ) {
-        baseClass = [NSObject class];
-    }
-    
-    for ( Class clazzType = [self class]; clazzType != baseClass; ) {
-        unsigned int        propertyCount = 0;
-        objc_property_t *    properties = class_copyPropertyList( clazzType, &propertyCount );
-        
-        for ( NSUInteger i = 0; i < propertyCount; i++ ) {
-            const char *    name = property_getName(properties[i]);
-            const char *    attr = property_getAttributes(properties[i]);
-            
-            if ( [BAEncoding isReadOnly:attr] ) {
-                continue;
-            }
-            
-            NSString * propertyName = [NSString stringWithCString:name encoding:NSUTF8StringEncoding];
-            NSObject * propertyValue = [(NSObject *)obj valueForKey:propertyName];
-            
-            [self setValue:propertyValue forKey:propertyName];
-        }
-        
-        free( properties );
-        
-        clazzType = class_getSuperclass( clazzType );
-        if ( nil == clazzType )
-            break;
-    }
-}
-
-- (void)deepCopyFrom:(id)obj {
-    if ( nil == obj ) {
-        return;
-    }
-    
-    Class baseClass = [[obj class] baseClass];
-    if ( nil == baseClass ) {
-        baseClass = [NSObject class];
-    }
-    
-    for ( Class clazzType = [obj class]; clazzType != baseClass; ) {
-        unsigned int        propertyCount = 0;
-        objc_property_t *    properties = class_copyPropertyList( clazzType, &propertyCount );
-        
-        for ( NSUInteger i = 0; i < propertyCount; i++ ) {
-            const char *    name = property_getName(properties[i]);
-            const char *    attr = property_getAttributes(properties[i]);
-            
-            if ( [BAEncoding isReadOnly:attr] ) {
-                continue;
-            }
-            
-            NSString * propertyName = [NSString stringWithCString:name encoding:NSUTF8StringEncoding];
-            NSObject * propertyValue = [(NSObject *)obj valueForKey:propertyName];
-            
-            [self setValue:propertyValue forKey:propertyName];
-        }
-        
-        free( properties );
-        
-        clazzType = class_getSuperclass( clazzType );
-        if ( nil == clazzType )
-            break;
-    }
-}
-
-- (id)clone {
-    id newObject = [[[self class] alloc] init];
-    
-    if ( newObject ) {
-        [newObject deepCopyFrom:self];
-    }
-    
-    return newObject;
-}
-
-- (BOOL)shallowCopy:(NSObject *)obj {
-    Class currentClass = [self class];
-    Class instanceClass = [obj class];
-    
-    if (self == obj) { //相同实例
-        return NO;
-    }
-    
-    if (![obj isMemberOfClass:currentClass] ) { //不是当前类的实例
-        return NO;
-    }
-    
-    while (instanceClass != [NSObject class]) {
-        unsigned int propertyListCount = 0;
-        objc_property_t *propertyList = class_copyPropertyList(currentClass, &propertyListCount);
-        for (int i = 0; i < propertyListCount; i++) {
-            objc_property_t property = propertyList[i];
-            const char *property_name = property_getName(property);
-            NSString *propertyName = [NSString stringWithCString:property_name encoding:NSUTF8StringEncoding];
-            
-            //check if property is dynamic and readwrite
-            char *dynamic = property_copyAttributeValue(property, "D");
-            char *readonly = property_copyAttributeValue(property, "R");
-            if (propertyName && !readonly) {
-                id propertyValue = [obj valueForKey:propertyName];
-                [self setValue:propertyValue forKey:propertyName];
-            }
-            free(dynamic);
-            free(readonly);
-        }
-        free(propertyList);
-        instanceClass = class_getSuperclass(instanceClass);
-    }
-    
-    return YES;
-}
-
-- (BOOL)deepCopy:(NSObject *)obj {
-    Class currentClass = [self class];
-    Class instanceClass = [obj class];
-    
-    if (self == obj) { // 相同实例
-        return NO;
-    }
-    
-    if (![obj isMemberOfClass:currentClass] ) { // 不是当前类的实例
-        return NO;
-    }
-    
-    while (instanceClass != [NSObject class]) {
-        unsigned int propertyListCount = 0;
-        objc_property_t *propertyList = class_copyPropertyList(currentClass, &propertyListCount);
-        for (int i = 0; i < propertyListCount; i++) {
-            objc_property_t property = propertyList[i];
-            const char *property_name = property_getName(property);
-            NSString *propertyName = [NSString stringWithCString:property_name encoding:NSUTF8StringEncoding];
-            
-            //check if property is dynamic and readwrite
-            char *dynamic = property_copyAttributeValue(property, "D");
-            char *readonly = property_copyAttributeValue(property, "R");
-            if (propertyName && !readonly) {
-                id propertyValue = [obj valueForKey:propertyName];
-                Class propertyValueClass = [propertyValue class];
-                BOOL flag = [NSObject isNSObjectClass:propertyValueClass];
-                if (flag) {
-                    if ([propertyValue conformsToProtocol:@protocol(NSCopying)]) {
-                        NSObject *copyValue = [propertyValue copy];
-                        [self setValue:copyValue forKey:propertyName];
-                    }else{
-                        NSObject *copyValue = [[[propertyValue class]alloc]init];
-                        [obj deepCopy:propertyValue];
-                        [self setValue:copyValue forKey:propertyName];
-                    }
-                }else{
-                    [self setValue:propertyValue forKey:propertyName];
-                }
-            }
-            free(dynamic);
-            free(readonly);
-        }
-        free(propertyList);
-        instanceClass = class_getSuperclass(instanceClass);
-    }
-    
-    return YES;
-}
-
-- (id)deepCopy {
-    id obj = nil;
-    @try {
-        obj = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:self]];
-    }
-    
-    @catch (NSException *exception) {
-        NSLog(@"%@", exception);
-    }
-    return obj;
-}
-
-// ----------------------------------
-// MARK: -
-// ----------------------------------
-
-+ (BOOL)isNullValue:(id)value {
-    return ((NSNull *)value == [NSNull null] ||
-            [@"<null>" isEqualToString:(NSString *)value] ||
-            [@"(null)" isEqualToString:(NSString *)value] ||
-            [@"null" isEqualToString:(NSString *)value] ||
-            value == nil);
-}
-
-- (id)getObjectInternal:(id)obj {
-    if([obj isKindOfClass:[NSString class]]
-       || [obj isKindOfClass:[NSNumber class]]
-       || [obj isKindOfClass:[NSNull class]]) {
-        return obj;
-    }
-    
-    if([obj isKindOfClass:[NSArray class]]) {
-        NSArray *objarr = obj;
-        NSMutableArray *arr = [NSMutableArray arrayWithCapacity:objarr.count];
-        
-        for(int i = 0; i < objarr.count; i++) {
-            [arr setObject:[self getObjectInternal:[objarr objectAtIndex:i]] atIndexedSubscript:i];
-        }
-        
-        return arr;
-    }
-    
-    if([obj isKindOfClass:[NSDictionary class]]) {
-        NSDictionary *objdic = obj;
-        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithCapacity:[objdic count]];
-        
-        for(NSString *key in objdic.allKeys) {
-            [dic setObject:[self getObjectInternal:[objdic objectForKey:key]] forKey:key];
-        }
-        
-        return dic;
-    }
-    
-    return [self getObjectData:obj];
-}
-
-- (NSDictionary*)getObjectData:(NSObject *)obj {
-    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-    unsigned int propsCount;
-    objc_property_t *props = class_copyPropertyList([obj class], &propsCount);
-    
-    for(int i = 0; i < propsCount; i++) {
-        objc_property_t prop = props[i];
-        NSString *propName = [NSString stringWithUTF8String:property_getName(prop)];
-        id value = [obj valueForKey:propName];
-        if(value == nil) {
-            value = [NSNull null];
-        } else {
-            value = [self getObjectInternal:value];
-            
-        }
-        
-        [dic setObject:value forKey:propName];
-    }
-    
-    return dic;
-}
-
-- (NSDictionary *)toDictionary {
-    return [self getObjectData:self];
-}
-
-- (NSData *)toJsonDataWithOptions:(NSJSONWritingOptions)options {
-    return [NSJSONSerialization dataWithJSONObject:[self getObjectData:self] options:options error:nil];
-}
-
-
 @end
 
 @implementation BARuntime

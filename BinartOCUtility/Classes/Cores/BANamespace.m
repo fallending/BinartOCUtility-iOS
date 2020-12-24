@@ -1,15 +1,7 @@
 
 #import "BANamespace.h"
 
-// ----------------------------------
-// MARK: Extern
-// ----------------------------------
-
 __strong BANamespace * namespace_root = nil;
-
-// ----------------------------------
-// MARK: Source - _Namespace
-// ----------------------------------
 
 @implementation BANamespace
 

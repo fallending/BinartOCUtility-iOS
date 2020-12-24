@@ -1,29 +1,25 @@
-#import <Foundation/Foundation.h>
+#import "BAMacros.h"
 
-// ----------------------------------
-// MARK: Macro
-// ----------------------------------
+#undef  ANNOTATION_SECTIONNAME
+#define ANNOTATION_SECTIONNAME "annotation.section"
 
-#undef  annotation_sectioname
-#define annotation_sectioname "annotation.section"
+#undef  META_ANNOTATION_ATTR
+#define META_ANNOTATION_ATTR( _section_name_ ) __attribute((used, section("__DATA,"#_section_name_" ")))
 
-#undef  meta_annotation_attr
-#define meta_annotation_attr( _section_name_ ) __attribute((used, section("__DATA,"#_section_name_" ")))
+#undef  META_ANNOTATION
+#define META_ANNOTATION( _section_name_, _obj_name_) \
+        char * _obj_name_##_obj META_ANNOTATION_ATTR( _section_name_ ) = ""#_obj_name_;
 
-#undef  meta_annotation
-#define meta_annotation( _section_name_, _obj_name_) \
-        char * _obj_name_##_obj meta_annotation_attr( _section_name_ ) = ""#_obj_name_;
+#undef  META_ANNOTATION_BIND
+#define META_ANNOTATION_BIND( _section_name_, _intf_name_, _impl_name_ ) \
+        char * _impl_name_##_ META_ANNOTATION_ATTR( _section_name_ ) = "{ \""#_intf_name_"\" : \""#_impl_name_"\"}";
 
-#undef  meta_annotation_bind
-#define meta_annotation_bind( _section_name_, _intf_name_, _impl_name_ ) \
-        char * _impl_name_##_ meta_annotation_attr( _section_name_ ) = "{ \""#_intf_name_"\" : \""#_impl_name_"\"}";
+#undef  ANNOTATION
+#define ANNOTATION( _name_ ) META_ANNOTATION( ANNOTATION_SECTIONNAME, _name_ )
 
-#undef  annotation
-#define annotation( _name_ ) meta_annotation( annotation_sectioname, _name_ )
-
-#undef  annotation_bind
-#define annotation_bind( _intf_name_, _impl_name_ ) \
-        meta_annotation_bind( annotation_sectioname, _intf_name_, _impl_name_ )
+#undef  ANNOTATION_BIND
+#define ANNOTATION_BIND( _intf_name_, _impl_name_ ) \
+        META_ANNOTATION_BIND( ANNOTATION_SECTIONNAME, _intf_name_, _impl_name_ )
 
 // ----------------------------------
 // MARK: Interface
@@ -38,11 +34,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BAAnnotation : NSObject
 
-+ (NSArray <NSString *> *)annotationObjects; // Objects at section ##annotation_sectioname
-+ (NSArray <NSString *> *)annotationBindings; // Bindings at section ##annotation_sectioname
++ (NSArray <NSString *> *)ba_annotationObjects; // Objects at section ##ANNOTATION_SECTIONNAME
++ (NSArray <NSString *> *)ba_annotationBindings; // Bindings at section ##ANNOTATION_SECTIONNAME
 
-+ (NSArray <NSString *> *)annotationObjectsForSectioname:(NSString *)sectioname;
-+ (NSArray <NSString *> *)annotationBindingsForSectioname:(NSString *)sectioname;
++ (NSArray <NSString *> *)ba_annotationObjectsForSectioname:(NSString *)sectioname;
++ (NSArray <NSString *> *)ba_annotationBindingsForSectioname:(NSString *)sectioname;
 
 @end
 

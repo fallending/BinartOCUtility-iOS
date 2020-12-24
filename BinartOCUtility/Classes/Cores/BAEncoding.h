@@ -9,11 +9,9 @@
  *  https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html
  *  https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html
  *
- *  @param typeEncoding  A Type-Encoding string.
- *  @return The encoding type.
+ *  typeEncoding  A Type-Encoding string.
+ *  The encoding type.
  */
-
-#pragma mark -
 
 // 枚举值一般是4个字节的int值,在64位系统上是8个字节
 typedef enum {
@@ -85,21 +83,7 @@ typedef enum {
     
 } EncodingType;
 
-#pragma mark -
-
-/**
- *  类型編碼器
- */
-
 @interface BAEncoding : NSObject
-
-/**
- *  判斷對象屬性是否為只讀？
- *
- *  @param attr 屬性名稱
- *
- *  @return YES或NO
- */
 
 + (BOOL)isReadOnly:(const char *)attr;
 

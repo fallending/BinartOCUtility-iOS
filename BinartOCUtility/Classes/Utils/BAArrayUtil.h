@@ -23,38 +23,23 @@ typedef NSComparisonResult    (^NSArrayCompareBlock)(id left, id right );
 
 - (BOOL)ba_containsString:(NSString *)aString;
 
-/**
- *  遍历
- */
+/// 遍历
 - (void)ba_each:(void (^)(id obj))block;
 - (void)ba_apply:(void (^)(id obj))block;
 
-/**
- *  匹配
- */
+/// 匹配
 - (id)ba_match: (BOOL (^)(id obj))block;
 
-/**
- *  筛选
- */
+/// 筛选
 - (NSArray *)ba_select: (BOOL (^)(id obj))block;
 
 - (NSArray *)ba_reject:(BOOL (^)(id obj))block;
 
-/**
- *  映射
- */
+/// 映射
 - (NSArray *)ba_map: (id (^)(id obj))block;
 - (NSArray *)ba_compact:(id (^)(id obj))block;
 
-/**
- *  化简
- *
- *  @param initial 初始值
- *  @param block handler of client's operation
- *
- *  @return result
- */
+/// 化简
 - (id)ba_reduce:(nullable id)initial withBlock:(__nullable id (^)(__nullable id sum, id obj))block;
 - (NSInteger)ba_reduceInteger:(NSInteger)initial withBlock:(NSInteger(^)(NSInteger result, id obj))block;
 - (CGFloat)ba_reduceFloat:(CGFloat)inital withBlock:(CGFloat(^)(CGFloat result, id obj))block;

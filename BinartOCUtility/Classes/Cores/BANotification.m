@@ -36,7 +36,7 @@
 }
 
 - (void)ba_observeAllNotifications {
-    NSArray * methods = [[self class] methodsWithPrefix:@"ba_handleNotification:" untilClass:[NSObject class]];
+    NSArray * methods = [[self class] ba_methodsWithPrefix:@"ba_handleNotification:" untilClass:[NSObject class]];
     
     if ( nil == methods || 0 == methods.count ) {
         return;

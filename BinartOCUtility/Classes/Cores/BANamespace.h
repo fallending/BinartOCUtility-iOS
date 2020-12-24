@@ -1,15 +1,11 @@
 
 #import <Foundation/Foundation.h>
 
-// ----------------------------------
-// MARK: Macro - namespace
-// ----------------------------------
-
-#define namespace( ... )		macro_concat( namespace_, macro_count(__VA_ARGS__) )( __VA_ARGS__ )
-#define namespace_0( ... )
+#define NAMESPACE( ... )		macro_concat( NAMESPACE_, macro_count(__VA_ARGS__) )( __VA_ARGS__ )
+#define NAMESPACE_0( ... )
 
 /** 当参数为 1 个，建立一个以_parent为名字的命名空间，不需要支持sharedInstance */
-#define namespace_1( _parent, ... ) \
+#define NAMESPACE_1( _parent, ... ) \
         class _Namespace_##_parent; \
         extern _Namespace_##_parent *_parent; \
         @interface _Namespace_##_parent : _Namespace \
@@ -19,13 +15,13 @@
         @end
 
 /** 当参数为 2 个，在根命名空间namespace_root上，追加服务对象，但不建立新的命名空间 */
-#define namespace_2( _clild, _class, ... ) \
+#define NAMESPACE_2( _clild, _class, ... ) \
         interface _Namespace (_class) \
         @prop_readonly( _class *, _clild ); \
         @end
 
 /** 当参数为 3 个，在命名空间_parent上，追加服务对象，前提是命名空间_parent要存在 */
-#define namespace_3( _parent, _child, _class, ... ) \
+#define NAMESPACE_3( _parent, _child, _class, ... ) \
         interface _Namespace_##_parent (_Namespace_##_child) \
         @prop_readonly( _class *, _child ); \
         @end
@@ -34,9 +30,9 @@
 // MARK: Macro - def_namespace( ... )
 // ----------------------------------
 
-#define def_namespace( ... )	macro_concat( def_namespace_, macro_count(__VA_ARGS__) )( __VA_ARGS__ )
-#define def_namespace_0( ... )
-#define def_namespace_1( _parent, ... ) \
+#define DEF_NAMESPACE( ... )	macro_concat( DEF_NAMESPACE_, macro_count(__VA_ARGS__) )( __VA_ARGS__ )
+#define DEF_NAMESPACE_0( ... )
+#define DEF_NAMESPACE_1( _parent, ... ) \
         implementation _Namespace_##_parent \
         @end \
         __strong _Namespace_##_parent * _parent = nil; \
@@ -55,7 +51,7 @@
         } \
         @end
 
-#define def_namespace_2( _object, _class, ... ) \
+#define DEF_NAMESPACE_2( _object, _class, ... ) \
         implementation _Namespace (_class) \
         @def_prop_dynamic( _class *, _object ); \
         - (_class *)_object { \
@@ -75,7 +71,7 @@
         } \
         @end
 
-#define def_namespace_3( _parent, _child, _class, ... ) \
+#define DEF_NAMESPACE_3( _parent, _child, _class, ... ) \
         implementation _Namespace_##_parent (_Namespace_##_child) \
         @def_prop_dynamic( _class *, _child ); \
         - (_class *)_child { \
@@ -96,6 +92,7 @@
         @end
 
 @interface BANamespace : NSObject
+
 @end
 
 // ----------------------------------
