@@ -6,10 +6,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: = 存放
 
-+ (NSMutableDictionary *)ba_keyValues:(id)first, ...;
+- (BOOL)ba_set:(NSObject *)obj atPath:(NSString *)path;
+- (BOOL)ba_set:(NSObject *)obj atPath:(NSString *)path separator:(NSString * _Nullable)separator;
 
-- (BOOL)ba_setObject:(NSObject *)obj atPath:(NSString *)path;
-- (BOOL)ba_setObject:(NSObject *)obj atPath:(NSString *)path separator:(NSString * _Nullable)separator;
++ (NSMutableDictionary *)ba_keyValues:(id)first, ...;
 - (BOOL)ba_setKeyValues:(id)first, ...;
 
 - (void)ba_setPoint:(CGPoint)o forKey:(NSString *)key;

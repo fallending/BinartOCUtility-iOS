@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		4C9CD42A6ED55CCABC9A4A5E /* Pods_BinartOCUtility_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF2FC584474957E8468BE7B0 /* Pods_BinartOCUtility_Tests.framework */; };
+		58B25AEC25961D0A006BAC02 /* BAUAppDelegate+TestPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 58B25AEB25961D0A006BAC02 /* BAUAppDelegate+TestPath.m */; };
+		58B25B1F259738E8006BAC02 /* BAUAppDelegate+TestCategoryOverrideWarning.m in Sources */ = {isa = PBXBuildFile; fileRef = 58B25B1E259738E8006BAC02 /* BAUAppDelegate+TestCategoryOverrideWarning.m */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -39,6 +41,10 @@
 /* Begin PBXFileReference section */
 		234E4C0478FAC474022B5606 /* Pods-BinartOCUtility_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BinartOCUtility_Tests.release.xcconfig"; path = "Target Support Files/Pods-BinartOCUtility_Tests/Pods-BinartOCUtility_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		4C1D0E6AEFD50027D1E8B861 /* BinartOCUtility.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = BinartOCUtility.podspec; path = ../BinartOCUtility.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		58B25AEA25961D0A006BAC02 /* BAUAppDelegate+TestPath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BAUAppDelegate+TestPath.h"; sourceTree = "<group>"; };
+		58B25AEB25961D0A006BAC02 /* BAUAppDelegate+TestPath.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "BAUAppDelegate+TestPath.m"; sourceTree = "<group>"; };
+		58B25B1D259738E8006BAC02 /* BAUAppDelegate+TestCategoryOverrideWarning.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BAUAppDelegate+TestCategoryOverrideWarning.h"; sourceTree = "<group>"; };
+		58B25B1E259738E8006BAC02 /* BAUAppDelegate+TestCategoryOverrideWarning.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "BAUAppDelegate+TestCategoryOverrideWarning.m"; sourceTree = "<group>"; };
 		6003F58A195388D20070C39A /* BinartOCUtility_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BinartOCUtility_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -151,6 +157,10 @@
 				71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
 				6003F594195388D20070C39A /* Supporting Files */,
+				58B25AEA25961D0A006BAC02 /* BAUAppDelegate+TestPath.h */,
+				58B25AEB25961D0A006BAC02 /* BAUAppDelegate+TestPath.m */,
+				58B25B1D259738E8006BAC02 /* BAUAppDelegate+TestCategoryOverrideWarning.h */,
+				58B25B1E259738E8006BAC02 /* BAUAppDelegate+TestCategoryOverrideWarning.m */,
 			);
 			name = "Example for BinartOCUtility";
 			path = BinartOCUtility;
@@ -386,7 +396,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				6003F59E195388D20070C39A /* BAUAppDelegate.m in Sources */,
+				58B25B1F259738E8006BAC02 /* BAUAppDelegate+TestCategoryOverrideWarning.m in Sources */,
 				6003F5A7195388D20070C39A /* BAUViewController.m in Sources */,
+				58B25AEC25961D0A006BAC02 /* BAUAppDelegate+TestPath.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -8,12 +8,56 @@
 
 #import "BAUAppDelegate.h"
 #import <BinartOCUtility/BAUtility.h>
+#import "BAUAppDelegate+TestPath.h"
+
+///usr/include/cdefs.h
+//#define __dead2         __attribute__((__noreturn__))
+//#define __pure2         __attribute__((__const__))
+//
+///* __unused denotes variables and functions that may not be used, preventing
+// * the compiler from warning about it if not used.
+// */
+//#define __unused        __attribute__((__unused__))
+//
+///* __used forces variables and functions to be included even if it appears
+// * to the compiler that they are not used (and would thust be discarded).
+// */
+//#define __used          __attribute__((__used__))
+//
+///* __cold marks code used for debugging or that is rarely taken
+// * and tells the compiler to optimize for size and outline code.
+// */
+//#if __has_attribute(cold)
+//#define __cold          __attribute__((__cold__))
+//#else
+//#define __cold
+//#endif
+//
+///* __exported denotes symbols that should be exported even when symbols
+// * are hidden by default.
+// * __exported_push/_exported_pop are pragmas used to delimit a range of
+// *  symbols that should be exported even when symbols are hidden by default.
+// */
+//#define __exported                      __attribute__((__visibility__("default")))
+//#define __exported_push         _Pragma("GCC visibility push(default)")
+//#define __exported_pop          _Pragma("GCC visibility pop")
 
 @implementation BAUAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    
+    [self testPath];
+    
+#if DEBUG
+    NSLog(@"run in debug env");
+#else
+    NSLog(@"run in release env");
+#endif
+    
+    
+    
     return YES;
 }
 
@@ -43,5 +87,6 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
 
 @end

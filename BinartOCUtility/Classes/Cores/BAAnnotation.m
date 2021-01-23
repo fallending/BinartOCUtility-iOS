@@ -53,7 +53,7 @@ static NSArray<NSString *>* __variablesAt(char *section) {
 + (NSArray<NSString *> *)ba_annotationObjects {
     static NSArray<NSString *> *objects = nil;
     
-    EXEC_ONCE( ^{
+    ba_exec_once( ^{
         objects = __variablesAt(ANNOTATION_SECTIONNAME);
     })
     
@@ -63,7 +63,7 @@ static NSArray<NSString *>* __variablesAt(char *section) {
 + (NSArray<NSString *> *)ba_annotationBindings {
     static NSArray<NSString *> *bindings = nil;
     
-    EXEC_ONCE( ^{
+    ba_exec_once( ^{
         bindings = __variablesAt(ANNOTATION_SECTIONNAME);
     })
     

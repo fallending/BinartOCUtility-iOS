@@ -32,7 +32,6 @@ typedef NSComparisonResult    (^NSArrayCompareBlock)(id left, id right );
 
 /// 筛选
 - (NSArray *)ba_select: (BOOL (^)(id obj))block;
-
 - (NSArray *)ba_reject:(BOOL (^)(id obj))block;
 
 /// 映射

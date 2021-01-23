@@ -27,9 +27,19 @@
 #import "BAWeakProxy.h"
 
 // Utils
+#import "BAArrayUtil.h"
+#import "BABundleUtil.h"
 #import "BADataUtil.h"
+#import "BADateUtil.h"
+#import "BADeviceUtil.h"
+#import "BADictionaryUtil.h"
 #import "BAJsonUtil.h"
+#import "BANumberUtil.h"
+#import "BASandboxUtil.h"
+#import "BASetUtil.h"
 #import "BAStringUtil.h"
+#import "BATableUtil.h"
+#import "BAValidatorUtil.h"
 
 // No more categories, or it'll be too heavy!!!
 // As a matter of fact, it's heavy enough!!!

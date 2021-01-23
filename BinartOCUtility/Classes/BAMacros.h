@@ -188,16 +188,16 @@
 
 // 调试代码块
 #ifdef DEBUG
-#define BA_LOG( s, ... )                   fprintf(stderr,"%s, %d, %s\n", [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], __LINE__, [[NSString stringWithFormat:(s), ##__VA_ARGS__] UTF8String]);
+#define ba_log( s, ... )                   fprintf(stderr,"%s, %d, %s\n", [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], __LINE__, [[NSString stringWithFormat:(s), ##__VA_ARGS__] UTF8String]);
 #else
-#define BA_LOG( s, ... )
+#define ba_log( s, ... )
 #endif
 
 // 大小
-#undef  MAX3
+#undef  ba_max3
 #define MAX3(a, b, c)                   ((a) > (b) ? ((a) > (c) ? (a) : (c)) : ((b) > (c) ? (b) : (c)))
 
-#undef  MIN3
+#undef  ba_min3
 #define MIN3(a, b, c)                   ((a) < (b) ? ((a) < (c) ? (a) : (c)) : ((b) < (c) ? (b) : (c)))
 
 // 判断某个方法是否覆写
@@ -212,34 +212,30 @@
 #undef  IS_PROTOCOL_IMPLEMENTED
 #define IS_PROTOCOL_IMPLEMENTED( o, p ) [o conformsToProtocol:@protocol(p)]
 
-#undef  RETURN_IF
-#define RETURN_IF( _exp_ )                      if (_exp_) { return; }
+#undef  ba_returnif
+#define ba_returnif( expr )                     if (expr) { return; }
 
-// block can be null, more safely
-#undef  INVOKE_BLOCK_VOID
-#define INVOKE_BLOCK_VOID( _block_ )            { if (_block_) _block_(); }
+#undef  ba_invokeblock
+#define ba_invokeblock( block, ... )            { if (block) block(__VA_ARGS__); }
 
-#undef  INVOKE_BLOCK
-#define INVOKE_BLOCK( _block_, ... )            { if (_block_) _block_(__VA_ARGS__); }
+#undef  ba_selectorify
+#define ba_selectorify( c )                     NSSelectorFromString( @#c )
 
-#undef  SELECTOR_IFY
-#define SELECTOR_IFY( c )                       NSSelectorFromString( @#c )
+#undef  ba_keypathify
+#define ba_keypathify( keypath )                NSStringFromSelector(@selector(keypath))
 
-#undef  KEYPATH_IFY
-#define KEYPATH_IFY( keypath )                  NSStringFromSelector(@selector(keypath))
-
-#define TAKE_NONULL( ... )                      macro_concat(TAKE_NONULL_, macro_count(__VA_ARGS__))( __VA_ARGS__ )
-#define TAKE_NONULL_0( ... )
-#define TAKE_NONULL_1( ... )
-#define TAKE_NONULL_2( a, b )                   ( a ? a : b )
-#define TAKE_NONULL_3( a, b, c )                TAKE_NONULL_2( take_nonull_2(a, b), c)
+#define ba_take_nonull( ... )                   macro_concat(ba_take_nonull_, macro_count(__VA_ARGS__))( __VA_ARGS__ );
+#define ba_take_nonull_0( ... )
+#define ba_take_nonull_1( a )                   ( a )
+#define ba_take_nonull_2( a, b )                ( a ? a : b )
+#define ba_take_nonull_3( a, b, c )             ba_take_nonull_2( ba_take_nonull_2(a, b), c)
 
 #undef  TIMEOUT
 #define TIMEOUT(timeout, block) \
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(timeout * NSEC_PER_SEC)), dispatch_get_main_queue(), block);
 
-#undef  EXEC_ONCE
-#define EXEC_ONCE( _block_ ) \
+#undef  ba_exec_once
+#define ba_exec_once( _block_ ) \
         { \
             static dispatch_once_t predicate; \
             dispatch_once(&predicate, _block_); \

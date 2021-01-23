@@ -2,33 +2,11 @@
 
 @implementation NSMutableDictionary ( BAUtil )
 
-+ (NSMutableDictionary *)ba_keyValues:(id)first, ... {
-    NSMutableDictionary * dict = [NSMutableDictionary dictionary];
-    
-    va_list args;
-    va_start( args, first );
-    
-    for ( ;; first = nil )
-    {
-        NSObject * key = first ? first : va_arg( args, NSObject * );
-        if ( nil == key || NO == [key isKindOfClass:[NSString class]] )
-            break;
-        
-        NSObject * value = va_arg( args, NSObject * );
-        if ( nil == value )
-            break;
-        
-        [dict ba_setObject:value atPath:(NSString *)key];
-    }
-    va_end( args );
-    return dict;
+- (BOOL)ba_set:(NSObject *)obj atPath:(NSString *)path {
+    return [self ba_set:obj atPath:path separator:nil];
 }
 
-- (BOOL)ba_setObject:(NSObject *)obj atPath:(NSString *)path {
-    return [self ba_setObject:obj atPath:path separator:nil];
-}
-
-- (BOOL)ba_setObject:(NSObject *)obj atPath:(NSString *)path separator:(NSString *)separator {
+- (BOOL)ba_set:(NSObject *)obj atPath:(NSString *)path separator:(NSString *)separator {
     if ( 0 == [path length] )
         return NO;
     
@@ -78,6 +56,27 @@
     return YES;
 }
 
++ (NSMutableDictionary *)ba_keyValues:(id)first, ... {
+    NSMutableDictionary * dict = [NSMutableDictionary dictionary];
+    
+    va_list args;
+    va_start( args, first );
+    
+    for ( ;; first = nil ) {
+        NSObject * key = first ? first : va_arg( args, NSObject * );
+        if ( nil == key || NO == [key isKindOfClass:[NSString class]] )
+            break;
+        
+        NSObject * value = va_arg( args, NSObject * );
+        if ( nil == value )
+            break;
+        
+        [dict ba_set:value atPath:(NSString *)key];
+    }
+    va_end( args );
+    return dict;
+}
+
 - (BOOL)ba_setKeyValues:(id)first, ... {
     va_list args;
     va_start( args, first );
@@ -91,7 +90,7 @@
         if ( nil == value )
             break;
 
-        BOOL ret = [self ba_setObject:value atPath:(NSString *)key];
+        BOOL ret = [self ba_set:value atPath:(NSString *)key];
         if ( NO == ret ) {
             va_end( args );
             return NO;
