@@ -104,7 +104,7 @@ typedef struct _AspectBlock {
 
 #define AspectError(errorCode, errorDescription) \
         do { \
-            ba_log(@"Aspects: %@", errorDescription); \
+            mt_log(@"Aspects: %@", errorDescription); \
             if (error) { \
                 *error = [NSError errorWithDomain:AspectErrorDomain code:errorCode userInfo:@{NSLocalizedDescriptionKey: errorDescription}]; \
             } \
@@ -297,7 +297,7 @@ static void aspect_prepareClassAndHookSelector(NSObject *self, SEL selector, NSE
         // We use forwardInvocation to hook in.
         class_replaceMethod(klass, selector, aspect_getMsgForwardIMP(self, selector), typeEncoding);
         
-        ba_log(@"Aspects: Installed hook for -[%@ %@].", klass, NSStringFromSelector(selector));
+        mt_log(@"Aspects: Installed hook for -[%@ %@].", klass, NSStringFromSelector(selector));
     }
 }
 
@@ -325,7 +325,7 @@ static void aspect_cleanupHookedClassAndSelector(NSObject *self, SEL selector) {
 
         class_replaceMethod(klass, selector, originalIMP, typeEncoding);
         
-        ba_log(@"Aspects: Removed hook for -[%@ %@].", klass, NSStringFromSelector(selector));
+        mt_log(@"Aspects: Removed hook for -[%@ %@].", klass, NSStringFromSelector(selector));
     }
 
     // Deregister global tracked selector
@@ -344,7 +344,7 @@ static void aspect_cleanupHookedClassAndSelector(NSObject *self, SEL selector) {
             NSCAssert(originalClass != nil, @"Original class must exist");
             object_setClass(self, originalClass);
             
-            ba_log(@"Aspects: %@ has been restored.", NSStringFromClass(originalClass));
+            mt_log(@"Aspects: %@ has been restored.", NSStringFromClass(originalClass));
 
             // We can only dispose the class pair if we can ensure that no instances exist using our subclass.
             // Since we don't globally track this, we can't ensure this - but there's also not much overhead in keeping it around.
@@ -411,7 +411,7 @@ static void aspect_swizzleForwardInvocation(Class klass) {
         class_addMethod(klass, NSSelectorFromString(AspectsForwardInvocationSelectorName), originalImplementation, "v@:@");
     }
     
-    ba_log(@"Aspects: %@ is now aspect aware.", NSStringFromClass(klass));
+    mt_log(@"Aspects: %@ is now aspect aware.", NSStringFromClass(klass));
 }
 
 static void aspect_undoSwizzleForwardInvocation(Class klass) {
@@ -422,7 +422,7 @@ static void aspect_undoSwizzleForwardInvocation(Class klass) {
     IMP originalImplementation = method_getImplementation(originalMethod ?: objectMethod);
     class_replaceMethod(klass, @selector(forwardInvocation:), originalImplementation, "v@:@");
 
-    ba_log(@"Aspects: %@ has been restored.", NSStringFromClass(klass));
+    mt_log(@"Aspects: %@ has been restored.", NSStringFromClass(klass));
 }
 
 static void aspect_hookedGetClass(Class class, Class statedClass) {
@@ -847,7 +847,7 @@ static void aspect_deregisterTrackedSelector(id self, SEL selector) {
 
     // Be extra paranoid. We already check that on hook registration.
     if (numberOfArguments > originalInvocation.methodSignature.numberOfArguments) {
-        ba_log(@"Block has too many arguments. Not calling %@", info);
+        mt_log(@"Block has too many arguments. Not calling %@", info);
         return NO;
     }
 
@@ -863,7 +863,7 @@ static void aspect_deregisterTrackedSelector(id self, SEL selector) {
 		NSGetSizeAndAlignment(type, &argSize, NULL);
         
 		if (!(argBuf = reallocf(argBuf, argSize))) {
-            ba_log(@"Failed to allocate memory for block invocation.");
+            mt_log(@"Failed to allocate memory for block invocation.");
 			return NO;
 		}
         
@@ -977,7 +977,7 @@ static void swizzleDeallocIfNeeded(Class classToSwizzle) {
         __block void (*originalDealloc)(__unsafe_unretained id, SEL) = NULL;
         
         id newDealloc = ^(__unsafe_unretained id self) {
-            void (^ onWillDeallocHandler)(void) = [self ba_getAssociatedObjectForKey:"onWillDeallocHandler"];
+            void (^ onWillDeallocHandler)(void) = [self mt_getAssociatedObjectForKey:"onWillDeallocHandler"];
             
             if (onWillDeallocHandler) {
                 onWillDeallocHandler();
@@ -1017,7 +1017,7 @@ static void swizzleDeallocIfNeeded(Class classToSwizzle) {
 @implementation NSObject ( AspectLifeCycle )
 
 - (void)onWillDealloc:(void (^)(void))handler {
-    [self ba_retainAssociatedObject:handler forKey:"onWillDeallocHandler"];
+    [self mt_retainAssociatedObject:handler forKey:"onWillDeallocHandler"];
     
     swizzleDeallocIfNeeded(self.class);
 }

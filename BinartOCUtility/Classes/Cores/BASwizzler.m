@@ -20,7 +20,7 @@
 @implementation NSObject ( BASwizzler )
 
 
-+ (BOOL)ba_swizzleMethod:(SEL)originalSelector withMethod:(SEL)newSelector error:(NSError *__autoreleasing *)error {
++ (BOOL)mt_swizzleMethod:(SEL)originalSelector withMethod:(SEL)newSelector error:(NSError *__autoreleasing *)error {
 	Method origMethod = class_getInstanceMethod(self, originalSelector);
 	if (!origMethod) {
 		SetNSError(error, @"original method %@ not found for class %@", NSStringFromSelector(originalSelector), [self class]);
@@ -46,11 +46,11 @@
 	return YES;
 }
 
-+ (BOOL)ba_swizzleClassMethod:(SEL)originalSelector withClassMethod:(SEL)newSelector error:(NSError *__autoreleasing *)error {
-	return [self ba_swizzleMethod:originalSelector withMethod:newSelector error:error];
++ (BOOL)mt_swizzleClassMethod:(SEL)originalSelector withClassMethod:(SEL)newSelector error:(NSError *__autoreleasing *)error {
+	return [self mt_swizzleMethod:originalSelector withMethod:newSelector error:error];
 }
 
-+ (BOOL)ba_copyMethod:(SEL)newSelector toMethod:(SEL)dstSelector error:(NSError *__autoreleasing *)error {
++ (BOOL)mt_copyMethod:(SEL)newSelector toMethod:(SEL)dstSelector error:(NSError *__autoreleasing *)error {
     Method origMethod = class_getInstanceMethod(self, newSelector);
     if (!origMethod) {
         SetNSError(error, @"original method %@ not found for class %@", NSStringFromSelector(newSelector), [self class]);
@@ -73,8 +73,8 @@
     return YES;
 }
 
-+ (BOOL)ba_copyClassMethod:(SEL)newSelector toClassMethod:(SEL)dstSelector error:(NSError *__autoreleasing *)error {
-    return [self ba_copyMethod:newSelector toMethod:dstSelector error:error];
++ (BOOL)mt_copyClassMethod:(SEL)newSelector toClassMethod:(SEL)dstSelector error:(NSError *__autoreleasing *)error {
+    return [self mt_copyMethod:newSelector toMethod:dstSelector error:error];
 }
 
 static BOOL __method_swizzle(Class klass, SEL origSel, SEL altSel) {
@@ -159,15 +159,15 @@ static void __method_replace(Class toClass, Class fromClass, SEL selector) {
 
 // Implimentation
 
-+ (void)ba_swizzleMethod:(SEL)originalSelector withMethod:(SEL)newSelector {
++ (void)mt_swizzleMethod:(SEL)originalSelector withMethod:(SEL)newSelector {
     __method_swizzle(self.class, originalSelector, newSelector);
 }
 
-+ (void)ba_appendMethod:(SEL)newSelector fromClass:(Class)klass {
++ (void)mt_appendMethod:(SEL)newSelector fromClass:(Class)klass {
     __method_append(self.class, klass, newSelector);
 }
 
-+ (void)ba_replaceMethod:(SEL)selector fromClass:(Class)klass {
++ (void)mt_replaceMethod:(SEL)selector fromClass:(Class)klass {
     __method_replace(self.class, klass, selector);
 }
 

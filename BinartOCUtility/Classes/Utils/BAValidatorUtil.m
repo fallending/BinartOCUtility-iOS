@@ -499,7 +499,7 @@ static __strong NSMutableDictionary * __rules = nil;
 }
 
 - (_ValidatorRule)typeFromString:(NSString *)string {
-    string = [[string ba_trim] ba_unwrap];
+    string = [[string mt_trim] mt_unwrap];
     
     NSNumber * ruleType = [__rules objectForKey:string];
     if ( ruleType ) {
@@ -513,8 +513,8 @@ static __strong NSMutableDictionary * __rules = nil;
     NSUInteger offset = 0;
     
     if ( NSNotFound != [rule rangeOfString:@":"].location ) {
-        NSString * ruleName = [[rule ba_substringFromIndex:0 untilString:@":" endOffset:&offset] ba_trim];
-        NSString * ruleValue = [[[rule substringFromIndex:offset] ba_trim] ba_unwrap];
+        NSString * ruleName = [[rule mt_substringFromIndex:0 untilString:@":" endOffset:&offset] mt_trim];
+        NSString * ruleValue = [[[rule substringFromIndex:offset] mt_trim] mt_unwrap];
         
         return [self validate:value ruleName:ruleName ruleValue:ruleValue];
     } else {

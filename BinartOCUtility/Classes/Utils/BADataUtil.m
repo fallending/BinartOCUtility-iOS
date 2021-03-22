@@ -3,25 +3,25 @@
 
 @implementation NSData ( BAExtension )
 
-- (BOOL)ba_isJPEG {
+- (BOOL)mt_isJPEG {
     uint8_t a, b, c, d;
     [self getHeader:&a b:&b c:&c d:&d];
     
     return a == 0xFF && b == 0xD8 && c == 0xFF && (d == 0xE0 || d == 0xE1 || d == 0xE8);
 }
 
-- (BOOL)ba_isPNG {
+- (BOOL)mt_isPNG {
     uint8_t a, b, c, d;
     [self getHeader:&a b:&b c:&c d:&d];
     
     return a == 0x89 && b == 0x50 && c == 0x4E && d == 0x47;
 }
 
-- (BOOL)ba_isImage {
-    return self.ba_isJPEG || self.ba_isPNG;
+- (BOOL)mt_isImage {
+    return self.mt_isJPEG || self.mt_isPNG;
 }
 
-- (BOOL)ba_isMPEG4 {
+- (BOOL)mt_isMPEG4 {
     uint8_t a, b, c, d;
     [self getBytes:&a range:NSMakeRange(4, 1)];
     [self getBytes:&b range:NSMakeRange(5, 1)];
@@ -31,11 +31,11 @@
     return a == 0x66 && b == 0x74 && c == 0x79 && d == 0x70;
 }
 
-- (BOOL)ba_isMedia {
-    return self.ba_isImage || self.ba_isMPEG4;
+- (BOOL)mt_isMedia {
+    return self.mt_isImage || self.mt_isMPEG4;
 }
 
-- (BOOL)ba_isCompressed {
+- (BOOL)mt_isCompressed {
     uint8_t a, b, c, d;
     [self getHeader:&a b:&b c:&c d:&d];
     
@@ -50,15 +50,15 @@
     [self getBytes:d range:NSMakeRange(3, 1)];
 }
 
-- (NSString *)ba_appropriateFileExtension {
-    if (self.ba_isJPEG) return @".jpg";
-    if (self.ba_isPNG) return @".png";
-    if (self.ba_isMPEG4) return @".mp4";
-    if (self.ba_isCompressed) return @".zip";
+- (NSString *)mt_appropriateFileExtension {
+    if (self.mt_isJPEG) return @".jpg";
+    if (self.mt_isPNG) return @".png";
+    if (self.mt_isMPEG4) return @".mp4";
+    if (self.mt_isCompressed) return @".zip";
     return @".dat";
 }
 
-- (NSString *)ba_base64EncodedStringWithWrapWidth:(NSUInteger)wrapWidth {
+- (NSString *)mt_base64EncodedStringWithWrapWidth:(NSUInteger)wrapWidth {
     if (![self length]) return nil;
     NSString *encoded = nil;
 #if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_9 || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0
@@ -105,19 +105,19 @@
     return result;
 }
 
-- (NSString *)ba_base64EncodedString {
-    return [self ba_base64EncodedStringWithWrapWidth:0];
+- (NSString *)mt_base64EncodedString {
+    return [self mt_base64EncodedStringWithWrapWidth:0];
 }
 
-- (NSString *)ba_UTF8String {
+- (NSString *)mt_UTF8String {
     return [[NSString alloc] initWithData:self encoding:NSUTF8StringEncoding];
 }
 
-- (NSString *)ba_ASCIIString {
+- (NSString *)mt_ASCIIString {
     return [[NSString alloc] initWithData:self encoding:NSASCIIStringEncoding];
 }
 
-- (NSString *)ba_MD5String {
+- (NSString *)mt_MD5String {
     unsigned char result[CC_MD5_DIGEST_LENGTH];
     
     CC_MD5([self bytes], (CC_LONG)[self length], result);
@@ -131,7 +131,7 @@
     return imageHash;
 }
 
-- (NSString *)ba_HEXString {
+- (NSString *)mt_HEXString {
     const unsigned char *dataBuffer = (const unsigned char *)self.bytes;
     
     if (!dataBuffer)
@@ -153,7 +153,7 @@
 @implementation BADataUtil
 
 
-+ (NSData *)ba_base64EncodedString:(NSString *)string {
++ (NSData *)mt_base64EncodedString:(NSString *)string {
     if (![string length]) return nil;
     NSData *decoded = nil;
 #if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_9 || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0

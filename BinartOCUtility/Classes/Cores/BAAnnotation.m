@@ -50,31 +50,31 @@ static NSArray<NSString *>* __variablesAt(char *section) {
 
 @implementation BAAnnotation
 
-+ (NSArray<NSString *> *)ba_annotationObjects {
++ (NSArray<NSString *> *)mt_annotationObjects {
     static NSArray<NSString *> *objects = nil;
     
-    ba_exec_once( ^{
+    mt_exec_once( ^{
         objects = __variablesAt(ANNOTATION_SECTIONNAME);
     })
     
     return objects;
 }
 
-+ (NSArray<NSString *> *)ba_annotationBindings {
++ (NSArray<NSString *> *)mt_annotationBindings {
     static NSArray<NSString *> *bindings = nil;
     
-    ba_exec_once( ^{
+    mt_exec_once( ^{
         bindings = __variablesAt(ANNOTATION_SECTIONNAME);
     })
     
     return bindings;
 }
 
-+ (NSArray<NSString *> *)ba_annotationObjectsForSectioname:(NSString *)sectioname {
++ (NSArray<NSString *> *)mt_annotationObjectsForSectioname:(NSString *)sectioname {
     return __variablesAt((char *)sectioname.UTF8String);
 }
 
-+ (NSArray<NSString *> *)ba_annotationBindingsForSectioname:(NSString *)sectioname {
++ (NSArray<NSString *> *)mt_annotationBindingsForSectioname:(NSString *)sectioname {
     return __variablesAt((char *)sectioname.UTF8String);
 }
 

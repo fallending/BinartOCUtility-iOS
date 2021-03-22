@@ -10,7 +10,7 @@
  *  @param keyPath 监听路径
  *  @param block   KVO回调block，obj为监听对象，oldVal为旧值，newVal为新值
  */
-- (void)ba_observe:(NSString *)keyPath block:(void (^)(id obj, id oldVal, id newVal))block;
+- (void)mt_observe:(NSString *)keyPath block:(void (^)(id obj, id oldVal, id newVal))block;
 
 @end
 

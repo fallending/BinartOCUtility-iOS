@@ -129,7 +129,7 @@
             
             if (self.completionBlock) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    ba_invokeblock(self.completionBlock)
+                    mt_invokeblock(self.completionBlock)
                     self.completionBlock = nil;
                 });
                 self.currentBlock = nil;
@@ -139,7 +139,7 @@
         self->_leftTime = time;
         if (self.currentBlock) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                ba_invokeblock(self.currentBlock, time)
+                mt_invokeblock(self.currentBlock, time)
             });
         }
     };

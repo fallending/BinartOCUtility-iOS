@@ -113,26 +113,26 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSObject ( BAProperty )
 
-+ (const char *)ba_attributesForProperty:(NSString *)property;
-- (const char *)ba_attributesForProperty:(NSString *)property;
++ (const char *)mt_attributesForProperty:(NSString *)property;
+- (const char *)mt_attributesForProperty:(NSString *)property;
 
-+ (NSDictionary *)ba_extentionForProperty:(NSString *)property;
-- (NSDictionary *)ba_extentionForProperty:(NSString *)property;
++ (NSDictionary *)mt_extentionForProperty:(NSString *)property;
+- (NSDictionary *)mt_extentionForProperty:(NSString *)property;
 
-+ (NSString *)ba_extentionForProperty:(NSString *)property stringValueWithKey:(NSString *)key;
-- (NSString *)ba_extentionForProperty:(NSString *)property stringValueWithKey:(NSString *)key;
++ (NSString *)mt_extentionForProperty:(NSString *)property stringValueWithKey:(NSString *)key;
+- (NSString *)mt_extentionForProperty:(NSString *)property stringValueWithKey:(NSString *)key;
 
-+ (NSArray *)ba_extentionForProperty:(NSString *)property arrayValueWithKey:(NSString *)key;
-- (NSArray *)ba_extentionForProperty:(NSString *)property arrayValueWithKey:(NSString *)key;
++ (NSArray *)mt_extentionForProperty:(NSString *)property arrayValueWithKey:(NSString *)key;
+- (NSArray *)mt_extentionForProperty:(NSString *)property arrayValueWithKey:(NSString *)key;
 
-- (BOOL)ba_hasAssociatedObjectForKey:(const char *)key;
-- (id)ba_getAssociatedObjectForKey:(const char *)key;
-- (id)ba_copyAssociatedObject:(id)obj forKey:(const char *)key;
-- (id)ba_retainAssociatedObject:(id)obj forKey:(const char *)key;
-- (id)ba_assignAssociatedObject:(id)obj forKey:(const char *)key;
-- (void)ba_weaklyAssociateObject:(id)obj forKey:(const char *)key;
-- (void)ba_removeAssociatedObjectForKey:(const char *)key;
-- (void)ba_removeAllAssociatedObjects;
+- (BOOL)mt_hasAssociatedObjectForKey:(const char *)key;
+- (id)mt_getAssociatedObjectForKey:(const char *)key;
+- (id)mt_copyAssociatedObject:(id)obj forKey:(const char *)key;
+- (id)mt_retainAssociatedObject:(id)obj forKey:(const char *)key;
+- (id)mt_assignAssociatedObject:(id)obj forKey:(const char *)key;
+- (void)mt_weaklyAssociateObject:(id)obj forKey:(const char *)key;
+- (void)mt_removeAssociatedObjectForKey:(const char *)key;
+- (void)mt_removeAllAssociatedObjects;
 
 @end
 

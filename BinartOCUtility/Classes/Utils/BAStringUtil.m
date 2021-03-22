@@ -41,74 +41,74 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
 
 @implementation NSString ( BAUtil )
 
-- (BOOL)ba_startsWith:(NSString*)prefix {
+- (BOOL)mt_startsWith:(NSString*)prefix {
     return [self hasPrefix:prefix];
 }
 
-- (BOOL)ba_endsWith:(NSString*)suffix {
+- (BOOL)mt_endsWith:(NSString*)suffix {
     return [self hasSuffix:suffix];
 }
 
-- (BOOL)ba_contains:(NSString*) str {
+- (BOOL)mt_contains:(NSString*) str {
     NSRange range = [self rangeOfString:str];
     return (range.location != NSNotFound);
 }
 
-- (BOOL)ba_contains:(NSString*) str options:(NSStringCompareOptions)option {
+- (BOOL)mt_contains:(NSString*) str options:(NSStringCompareOptions)option {
     NSRange range = [self rangeOfString:str options:option];
     return (range.location != NSNotFound);
 }
 
-- (NSArray *)ba_split:(NSString *)separator {
+- (NSArray *)mt_split:(NSString *)separator {
     return [self componentsSeparatedByString:separator];
 }
 
-- (NSString *)ba_append:(NSString *)str {
+- (NSString *)mt_append:(NSString *)str {
     return [self stringByAppendingString:str];
 }
 
-- (BOOL)ba_empty {
+- (BOOL)mt_empty {
     return ![self length];
 }
 
-- (BOOL)ba_notEmpty {
+- (BOOL)mt_notEmpty {
     return !![self length];
 }
 
-- (BOOL)ba_is:(NSString *)other {
+- (BOOL)mt_is:(NSString *)other {
     return [self isEqualToString:other];
 }
 
-- (BOOL)ba_isNot:(NSString *)other {
+- (BOOL)mt_isNot:(NSString *)other {
     return ![self isEqualToString:other];
 }
 
-- (NSString *)ba_trim {
+- (NSString *)mt_trim {
     return [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
-- (NSString *)ba_trimmingWhitespace {
+- (NSString *)mt_trimmingWhitespace {
     return [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 }
 
-- (NSString *)ba_trimmingWhitespaceAndNewlines {
+- (NSString *)mt_trimmingWhitespaceAndNewlines {
     return [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
-+ (NSString *)ba_trimmingWhitespaceAndChangLineWithChangN:(NSString*)str{
++ (NSString *)mt_trimmingWhitespaceAndChangLineWithChangN:(NSString*)str{
     str = [str stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]; //去除掉首尾的空白字符和换行字符
     str = [str stringByReplacingOccurrencesOfString:@"\r" withString:@""];
     str = [str stringByReplacingOccurrencesOfString:@"\n" withString:@""];
     return str;
 }
 
-- (NSString *)ba_trimmingLeadingAndTrailingWhitespace {
+- (NSString *)mt_trimmingLeadingAndTrailingWhitespace {
     
     NSString *newString = [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    return [newString ba_trimmingLeadingWhitespace];
+    return [newString mt_trimmingLeadingWhitespace];
 }
 
-- (NSString *)ba_trimmingLeadingWhitespace {
+- (NSString *)mt_trimmingLeadingWhitespace {
     NSInteger i = 0;
     
     while ((i < [self length])
@@ -118,26 +118,26 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return [self substringFromIndex:i];
 }
 
-- (NSString *)ba_trimBy:(NSString *)str {
+- (NSString *)mt_trimBy:(NSString *)str {
     NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:str];
     return [self stringByTrimmingCharactersInSet:set];
 }
 - (NSString *)delZero:(NSString *)src { // 去掉当前字符串的0，不同于[self trimBy:@"0"]
-    if ([src ba_endsWith:@"0"]) {
-        return [self delZero:[src ba_substringFromIndex:0 toIndex:(int)[src length]-1]];
+    if ([src mt_endsWith:@"0"]) {
+        return [self delZero:[src mt_substringFromIndex:0 toIndex:(int)[src length]-1]];
     } else {
         return src;
     }
 }
-- (NSString *)ba_trimFloatPointNumber {
-    return [[self delZero:self] ba_trimBy:@"."];
+- (NSString *)mt_trimFloatPointNumber {
+    return [[self delZero:self] mt_trimBy:@"."];
 }
 
-+ (NSString *)ba_random {
-    return [self ba_random:8];
++ (NSString *)mt_random {
+    return [self mt_random:8];
 }
 
-+ (NSString *)ba_random:(int)count {
++ (NSString *)mt_random:(int)count {
     if (count < 1) {
         return nil;
     }
@@ -146,13 +146,13 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     unsigned char digest[count];
     CCRNGStatus status = CCRandomGenerateBytes(digest, count);
     if (status == kCCSuccess) {
-        return [self ba_stringFrom:digest length:count];
+        return [self mt_stringFrom:digest length:count];
     }
     return nil;
 }
 
 
-+ (NSString *)ba_stringFrom:(unsigned char *)digest length:(size_t)length {
++ (NSString *)mt_stringFrom:(unsigned char *)digest length:(size_t)length {
     NSMutableString *string = [NSMutableString string];
     for (int i = 0; i < length; i++) {
         [string appendFormat:@"%02x",digest[i]];
@@ -161,32 +161,32 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
 }
 
 
-- (NSString *)ba_base64EncodedString:(NSStringEncoding)encoding {
+- (NSString *)mt_base64EncodedString:(NSStringEncoding)encoding {
     NSData *data = [self dataUsingEncoding:encoding allowLossyConversion:YES];
-    return data.ba_BASE64String;
+    return data.mt_BASE64String;
 }
 
-- (NSString *)ba_base64DecodedString:(NSStringEncoding)encoding {
-    return [NSString ba_stringWithBase64EncodedString:self encoding:encoding];
+- (NSString *)mt_base64DecodedString:(NSStringEncoding)encoding {
+    return [NSString mt_stringWithBase64EncodedString:self encoding:encoding];
 }
 
-+ (NSString *)ba_stringWithBase64EncodedString:(NSString *)string encoding:(NSStringEncoding)encoding {
-    NSData *data = [string ba_base64DecodedData];
++ (NSString *)mt_stringWithBase64EncodedString:(NSString *)string encoding:(NSStringEncoding)encoding {
+    NSData *data = [string mt_base64DecodedData];
     if (data) {
         return [[self alloc] initWithData:data encoding:encoding];
     }
     return nil;
 }
 
-- (NSData *)ba_base64DecodedData {
-    return [BADataUtil ba_base64EncodedString:self];
+- (NSData *)mt_base64DecodedData {
+    return [BADataUtil mt_base64EncodedString:self];
 }
 
-- (NSData *)ba_toData {
+- (NSData *)mt_toData {
     return [self dataUsingEncoding:NSUTF8StringEncoding];
 }
 
-- (NSString *)ba_MD5String {
+- (NSString *)mt_MD5String {
     const char * pointer = [self UTF8String];
     unsigned char md5Buffer[CC_MD5_DIGEST_LENGTH];
     
@@ -199,7 +199,7 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return string;
 }
 
-- (NSString *)ba_unwrap {
+- (NSString *)mt_unwrap {
     if ( self.length >= 2 ) {
         if ( [self hasPrefix:@"\""] && [self hasSuffix:@"\""] ) {
             return [self substringWithRange:NSMakeRange(1, self.length - 2)];
@@ -213,7 +213,7 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return self;
 }
 
-- (NSString *)ba_normalize {
+- (NSString *)mt_normalize {
     NSArray * lines = [self componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
     
     if ( lines && lines.count ) {
@@ -233,7 +233,7 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return nil;
 }
 
-- (NSString *)ba_fill:(NSString *)origin
+- (NSString *)mt_fill:(NSString *)origin
                sub:(NSString*)str
          maxLength:(int)len
                 at:(BOOL)tail {
@@ -245,7 +245,7 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return ret;
 }
 
-- (NSString *)ba_repeat:(NSUInteger)count {
+- (NSString *)mt_repeat:(NSUInteger)count {
     if ( 0 == count )
         return @"";
 
@@ -258,11 +258,11 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return text;
 }
 
-- (NSString *)ba_strongify {
+- (NSString *)mt_strongify {
     return [self stringByReplacingOccurrencesOfString:@"//" withString:@"/"];
 }
 
-- (BOOL)ba_match:(NSString *)expression {
+- (BOOL)mt_match:(NSString *)expression {
     NSRegularExpression * regex = [NSRegularExpression regularExpressionWithPattern:expression
                                                                             options:NSRegularExpressionCaseInsensitive
                                                                               error:nil];
@@ -278,7 +278,7 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return YES;
 }
 
-- (BOOL)ba_matchAnyOf:(NSArray *)array {
+- (BOOL)mt_matchAnyOf:(NSArray *)array {
     for ( NSString * str in array ) {
         if ( NSOrderedSame == [self compare:str options:NSCaseInsensitiveSearch] ) {
             return YES;
@@ -288,11 +288,11 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return NO;
 }
 
-- (BOOL)ba_isValueOf:(NSArray *)array {
-    return [self ba_isValueOf:array caseInsens:NO];
+- (BOOL)mt_isValueOf:(NSArray *)array {
+    return [self mt_isValueOf:array caseInsens:NO];
 }
 
-- (BOOL)ba_isValueOf:(NSArray *)array caseInsens:(BOOL)caseInsens {
+- (BOOL)mt_isValueOf:(NSArray *)array caseInsens:(BOOL)caseInsens {
     NSStringCompareOptions option = caseInsens ? NSCaseInsensitiveSearch : 0;
     
     for ( NSObject * obj in array ) {
@@ -307,11 +307,11 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
 }
 
 //added end
-- (NSString *)ba_substringFromIndex:(NSUInteger)from untilString:(NSString *)string {
-    return [self ba_substringFromIndex:from untilString:string endOffset:NULL];
+- (NSString *)mt_substringFromIndex:(NSUInteger)from untilString:(NSString *)string {
+    return [self mt_substringFromIndex:from untilString:string endOffset:NULL];
 }
 
-- (NSString *)ba_substringFromIndex:(NSUInteger)from untilString:(NSString *)string endOffset:(NSUInteger *)endOffset {
+- (NSString *)mt_substringFromIndex:(NSUInteger)from untilString:(NSString *)string endOffset:(NSUInteger *)endOffset {
     if ( 0 == self.length )
         return nil;
     
@@ -336,11 +336,11 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     }
 }
 
-- (NSString *)ba_substringFromIndex:(NSUInteger)from untilCharset:(NSCharacterSet *)charset {
-    return [self ba_substringFromIndex:from untilCharset:charset endOffset:NULL];
+- (NSString *)mt_substringFromIndex:(NSUInteger)from untilCharset:(NSCharacterSet *)charset {
+    return [self mt_substringFromIndex:from untilCharset:charset endOffset:NULL];
 }
 
-- (NSString *)ba_substringFromIndex:(NSUInteger)from untilCharset:(NSCharacterSet *)charset endOffset:(NSUInteger *)endOffset {
+- (NSString *)mt_substringFromIndex:(NSUInteger)from untilCharset:(NSCharacterSet *)charset endOffset:(NSUInteger *)endOffset {
     if ( 0 == self.length )
         return nil;
     
@@ -365,7 +365,7 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     }
 }
 
-- (NSUInteger)ba_countFromIndex:(NSUInteger)from inCharset:(NSCharacterSet *)charset {
+- (NSUInteger)mt_countFromIndex:(NSUInteger)from inCharset:(NSCharacterSet *)charset {
     if ( 0 == self.length )
         return 0;
     
@@ -387,7 +387,7 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
 #define NotFoundEx -1
 
 /**  Java-like method. Returns the char value at the specified index. */
-- (unichar)ba_charAt:(int)index {
+- (unichar)mt_charAt:(int)index {
     return [self characterAtIndex:index];
 }
 
@@ -397,34 +397,34 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
  * a value less than 0 if this string is lexicographically less than the string argument;
  * and a value greater than 0 if this string is lexicographically greater than the string argument.
  */
-- (NSComparisonResult)ba_compareTo:(NSString *)anotherString {
+- (NSComparisonResult)mt_compareTo:(NSString *)anotherString {
     return [self compare:anotherString];
 }
 
 /** Java-like method. Compares two strings lexicographically, ignoring case differences. */
-- (NSComparisonResult)ba_compareToIgnoreCase:(NSString *)str {
+- (NSComparisonResult)mt_compareToIgnoreCase:(NSString *)str {
     return [self compare:str options:NSCaseInsensitiveSearch];
 }
 
-- (BOOL)ba_equalsIgnoreCase:(NSString *)anotherString {
-    return [[self ba_toLowerCase] ba_is:[anotherString ba_toLowerCase]];
+- (BOOL)mt_equalsIgnoreCase:(NSString *)anotherString {
+    return [[self mt_toLowerCase] mt_is:[anotherString mt_toLowerCase]];
 }
 
-- (int)ba_indexOfChar:(unichar)ch {
-    return [self ba_indexOfChar:ch fromIndex:0];
+- (int)mt_indexOfChar:(unichar)ch {
+    return [self mt_indexOfChar:ch fromIndex:0];
 }
 
-- (int)ba_indexOfChar:(unichar)ch fromIndex:(int)index {
+- (int)mt_indexOfChar:(unichar)ch fromIndex:(int)index {
     int len = (int)self.length;
     for (int i = index; i < len; ++i) {
-        if (ch == [self ba_charAt:i]) {
+        if (ch == [self mt_charAt:i]) {
             return i;
         }
     }
     return NotFoundEx;
 }
 
-- (int)ba_indexOfString:(NSString*)str {
+- (int)mt_indexOfString:(NSString*)str {
     NSRange range = [self rangeOfString:str];
     if (range.location == NSNotFound) {
         return NotFoundEx;
@@ -432,7 +432,7 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return (int)range.location;
 }
 
-- (int)ba_indexOfString:(NSString*)str fromIndex:(int)index {
+- (int)mt_indexOfString:(NSString*)str fromIndex:(int)index {
     NSRange fromRange = NSMakeRange(index, self.length - index);
     NSRange range = [self rangeOfString:str options:NSLiteralSearch range:fromRange];
     if (range.location == NSNotFound) {
@@ -441,30 +441,30 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return (int)range.location;
 }
 
-- (int)ba_lastIndexOfChar:(unichar)ch {
+- (int)mt_lastIndexOfChar:(unichar)ch {
     int len = (int)self.length;
     for (int i = len-1; i >=0; --i) {
-        if ([self ba_charAt:i] == ch) {
+        if ([self mt_charAt:i] == ch) {
             return i;
         }
     }
     return NotFoundEx;
 }
 
-- (int)ba_lastIndexOfChar:(unichar)ch fromIndex:(int)index {
+- (int)mt_lastIndexOfChar:(unichar)ch fromIndex:(int)index {
     int len = (int)self.length;
     if (index >= len) {
         index = len - 1;
     }
     for (int i = index; i >= 0; --i) {
-        if ([self ba_charAt:i] == ch) {
+        if ([self mt_charAt:i] == ch) {
             return index;
         }
     }
     return NotFoundEx;
 }
 
-- (int)ba_lastIndexOfString:(NSString*)str {
+- (int)mt_lastIndexOfString:(NSString*)str {
     NSRange range = [self rangeOfString:str options:NSBackwardsSearch];
     if (range.location == NSNotFound) {
         return NotFoundEx;
@@ -472,7 +472,7 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return (int)range.location;
 }
 
-- (int)ba_lastIndexOfString:(NSString*)str fromIndex:(int)index {
+- (int)mt_lastIndexOfString:(NSString*)str fromIndex:(int)index {
     NSRange fromRange = NSMakeRange(0, index);
     NSRange range = [self rangeOfString:str options:NSBackwardsSearch range:fromRange];
     if (range.location == NSNotFound) {
@@ -481,7 +481,7 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return (int)range.location;
 }
 
-- (NSString *)ba_substringFromIndex:(int)beginIndex toIndex:(int)endIndex {
+- (NSString *)mt_substringFromIndex:(int)beginIndex toIndex:(int)endIndex {
     if (endIndex <= beginIndex) {
         return @"";
     }
@@ -489,19 +489,19 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return [self substringWithRange:range];
 }
 
-- (NSString *)ba_toLowerCase {
+- (NSString *)mt_toLowerCase {
     return [self lowercaseString];
 }
 
-- (NSString *)ba_toUpperCase {
+- (NSString *)mt_toUpperCase {
     return [self uppercaseString];
 }
 
-- (NSString *)ba_replaceAll:(NSString*)origin with:(NSString*)replacement {
+- (NSString *)mt_replaceAll:(NSString*)origin with:(NSString*)replacement {
     return [self stringByReplacingOccurrencesOfString:origin withString:replacement];
 }
 
-+ (NSString *)ba_reverseString:(NSString *)strSrc {
++ (NSString *)mt_reverseString:(NSString *)strSrc {
     NSMutableString* reverseString = [[NSMutableString alloc] init];
     NSInteger charIndex = [strSrc length];
     while (charIndex > 0) {
@@ -512,8 +512,8 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return reverseString;
 }
 
-- (NSString *)ba_matchGroupAtIndex:(NSUInteger)idx forRegex:(NSString *)regex {
-    NSArray *matches = [self ba_matchesForRegex:regex];
+- (NSString *)mt_matchGroupAtIndex:(NSUInteger)idx forRegex:(NSString *)regex {
+    NSArray *matches = [self mt_matchesForRegex:regex];
     if (matches.count == 0) return nil;
     NSTextCheckingResult *match = matches[0];
     if (idx >= match.numberOfRanges) return nil;
@@ -521,7 +521,7 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return [self substringWithRange:[match rangeAtIndex:idx]];
 }
 
-- (NSArray *)ba_matchesForRegex:(NSString *)pattern {
+- (NSArray *)mt_matchesForRegex:(NSString *)pattern {
     NSError *error = nil;
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:&error];
     if (error)
@@ -533,8 +533,8 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return matches;
 }
 
-- (NSArray *)ba_allMatchesForRegex:(NSString *)regex {
-    NSArray *matches = [self ba_matchesForRegex:regex];
+- (NSArray *)mt_allMatchesForRegex:(NSString *)regex {
+    NSArray *matches = [self mt_matchesForRegex:regex];
     if (matches.count == 0) return @[];
     
     NSMutableArray *strings = [NSMutableArray new];
@@ -544,11 +544,11 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return strings;
 }
 
-- (NSString *)ba_stringByReplacingMatchesForRegex:(NSString *)pattern withString:(NSString *)replacement {
+- (NSString *)mt_stringByReplacingMatchesForRegex:(NSString *)pattern withString:(NSString *)replacement {
     return [self stringByReplacingOccurrencesOfString:pattern withString:replacement options:NSRegularExpressionSearch range:NSMakeRange(0, self.length)];
 }
 
-- (NSString *)ba_stringByRegex:(NSString*)pattern substitution:(NSString*)substitute {
+- (NSString *)mt_stringByRegex:(NSString*)pattern substitution:(NSString*)substitute {
     regex_t preg;
     NSString *result = nil;
     
@@ -588,7 +588,7 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return result;
 }
 
-- (NSArray<NSString *> *)ba_rangeStringsOfSubString:(NSString *)subString {
+- (NSArray<NSString *> *)mt_rangeStringsOfSubString:(NSString *)subString {
     if (![subString isKindOfClass:[NSString class]]) {
         return nil;
     }
@@ -614,7 +614,7 @@ int rreplace (char *buf, int size, regex_t *re, char *rp) {
     return nil;
 }
 
-+ (NSString *)ba_randomLength:(NSUInteger)len {
++ (NSString *)mt_randomLength:(NSUInteger)len {
     NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
     

@@ -2,21 +2,21 @@
 
 @implementation NSBundle ( BAUtil )
 
-- (NSString *)ba_bundleName {
+- (NSString *)mt_bundleName {
     return [[self.resourcePath lastPathComponent] stringByDeletingPathExtension];
 }
 
-- (NSString *)ba_extensionName {
+- (NSString *)mt_extensionName {
     return [self.resourcePath pathExtension];
 }
 
-+ (NSBundle *)ba_bundleWithName:(NSString *)bundleName {
++ (NSBundle *)mt_bundleWithName:(NSString *)bundleName {
     NSString *bundlePath = [[NSBundle mainBundle] pathForResource:bundleName ofType:@"bundle"];
     return [NSBundle bundleWithPath:bundlePath];
 }
 
-+ (UIImage *)ba_imageWithName:(NSString *)imageName bundleName:(NSString *)bundleName {
-    NSBundle *bundle = [self ba_bundleWithName:bundleName];
++ (UIImage *)mt_imageWithName:(NSString *)imageName bundleName:(NSString *)bundleName {
+    NSBundle *bundle = [self mt_bundleWithName:bundleName];
     UIImage *(^ getBundleImage)(NSString *) = ^(NSString *res) {
         return  [UIImage imageNamed:imageName inBundle:bundle compatibleWithTraitCollection:nil]; // iOS 8.0
 //        NSString *imagePath = [bundle pathForResource:res ofType:@"png"];
@@ -27,8 +27,8 @@
     return image;
 }
 
-+ (UIImage *)ba_imageWithName:(NSString *)imageName bundleName:(NSString *)bundleName subPath:(NSString *)subPath {
-    NSBundle *bundle = [self ba_bundleWithName:bundleName];
++ (UIImage *)mt_imageWithName:(NSString *)imageName bundleName:(NSString *)bundleName subPath:(NSString *)subPath {
+    NSBundle *bundle = [self mt_bundleWithName:bundleName];
     UIImage *(^ getBundleImage)(NSString *) = ^(NSString *res) {
         NSString *imagePath = [bundle pathForResource:res ofType:@"png" inDirectory:subPath];
         return  [UIImage imageWithContentsOfFile:imagePath];
@@ -38,21 +38,21 @@
     return image;
 }
 
-- (id)ba_dataForResource:(NSString *)resName {
+- (id)mt_dataForResource:(NSString *)resName {
     NSString *    path = [NSString stringWithFormat:@"%@/%@", self.resourcePath, resName];
     NSData *    data = [NSData dataWithContentsOfFile:path];
     
     return data;
 }
 
-- (id)ba_textForResource:(NSString *)resName {
+- (id)mt_textForResource:(NSString *)resName {
     NSString *    path = [NSString stringWithFormat:@"%@/%@", self.resourcePath, resName];
     NSString *    data = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL];
     
     return data;
 }
 
-- (id)ba_imageForResource:(NSString *)resName {
+- (id)mt_imageForResource:(NSString *)resName {
     NSString *    extensionName = [resName pathExtension];
     NSString *    resourceName = [resName substringToIndex:(resName.length - extensionName.length - 1)];
     

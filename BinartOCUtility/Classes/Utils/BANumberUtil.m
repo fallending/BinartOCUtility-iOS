@@ -2,7 +2,7 @@
 
 @implementation NSNumber ( BAUtil )
 
-- (NSString *)ba_toDisplayNumberWithDigit:(NSInteger)digit {
+- (NSString *)mt_toDisplayNumberWithDigit:(NSInteger)digit {
     NSString *result = nil;
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
     
@@ -18,7 +18,7 @@
     return result;
 }
 
-- (NSString *)ba_toDisplayPercentageWithDigit:(NSInteger)digit {
+- (NSString *)mt_toDisplayPercentageWithDigit:(NSInteger)digit {
     NSString *result = nil;
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
     
@@ -31,7 +31,7 @@
     return result;
 }
 
-- (NSNumber *)ba_doRoundWithDigit:(NSUInteger)digit {
+- (NSNumber *)mt_doRoundWithDigit:(NSUInteger)digit {
     NSNumber *result = nil;
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
     
@@ -44,7 +44,7 @@
     return result;
 }
 
-- (NSNumber *)ba_doCeilWithDigit:(NSUInteger)digit {
+- (NSNumber *)mt_doCeilWithDigit:(NSUInteger)digit {
     NSNumber *result = nil;
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
     
@@ -56,7 +56,7 @@
     return result;
 }
 
-- (NSNumber *)ba_doFloorWithDigit:(NSUInteger)digit {
+- (NSNumber *)mt_doFloorWithDigit:(NSUInteger)digit {
     NSNumber *result = nil;
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
     
@@ -68,7 +68,7 @@
     return result;
 }
 
-- (void)ba_times:(void (^)(void))block {
+- (void)mt_times:(void (^)(void))block {
     NSParameterAssert(block != nil);
     
     for (NSInteger idx = 0 ; idx < self.integerValue ; ++idx ) {

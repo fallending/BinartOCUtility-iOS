@@ -5,15 +5,15 @@
 
 @implementation NSNotification ( BA )
 
-- (BOOL)ba_is:(NSString *)name {
+- (BOOL)mt_is:(NSString *)name {
     return [self.name isEqualToString:name];
 }
 
-- (BOOL)ba_isKindOf:(NSString *)prefix {
+- (BOOL)mt_isKindOf:(NSString *)prefix {
     return [self.name hasPrefix:prefix];
 }
 
-+ (instancetype)ba_named:(NSString *)aName {
++ (instancetype)mt_named:(NSString *)aName {
     return [NSNotification notificationWithName:aName object:nil];
 }
 
@@ -21,22 +21,22 @@
 
 @implementation NSObject ( NotificationResponder )
 
-- (void)ba_handleNotification:(NSNotification *)notification {
+- (void)mt_handleNotification:(NSNotification *)notification {
 }
 
-- (void)ba_observeNotification:(NSString *)notificationName {
+- (void)mt_observeNotification:(NSString *)notificationName {
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:notificationName
                                                   object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(ba_handleNotification:)
+                                             selector:@selector(mt_handleNotification:)
                                                  name:notificationName
                                                object:nil];
 }
 
-- (void)ba_observeAllNotifications {
-    NSArray * methods = [[self class] ba_methodsWithPrefix:@"ba_handleNotification:" untilClass:[NSObject class]];
+- (void)mt_observeAllNotifications {
+    NSArray * methods = [[self class] mt_methodsWithPrefix:@"mt_handleNotification:" untilClass:[NSObject class]];
     
     if ( nil == methods || 0 == methods.count ) {
         return;
@@ -51,17 +51,17 @@
         if ( nil == notificationName  )
             continue;
         
-        [self ba_observeNotification:notificationName];
+        [self mt_observeNotification:notificationName];
     }
 }
 
-- (void)ba_unobserveNotification:(NSString *)name {
+- (void)mt_unobserveNotification:(NSString *)name {
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:name
                                                   object:nil];
 }
 
-- (void)ba_unobserveAllNotifications {
+- (void)mt_unobserveAllNotifications {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -69,36 +69,36 @@
 
 @implementation NSObject (NotificationSender)
 
-+ (BOOL)ba_postNotification:(NSString *)name {
++ (BOOL)mt_postNotification:(NSString *)name {
     [[NSNotificationCenter defaultCenter] postNotificationName:name object:nil];
     return YES;
 }
 
-- (BOOL)ba_postNotification:(NSString *)name {
-    return [[self class] ba_postNotification:name];
+- (BOOL)mt_postNotification:(NSString *)name {
+    return [[self class] mt_postNotification:name];
 }
 
-+ (BOOL)ba_postNotification:(NSString *)name withObject:(NSObject *)object {
++ (BOOL)mt_postNotification:(NSString *)name withObject:(NSObject *)object {
     [[NSNotificationCenter defaultCenter] postNotificationName:name object:object];
     return YES;
 }
 
-- (BOOL)ba_postNotification:(NSString *)name withObject:(NSObject *)object {
-    return [[self class] ba_postNotification:name withObject:object];
+- (BOOL)mt_postNotification:(NSString *)name withObject:(NSObject *)object {
+    return [[self class] mt_postNotification:name withObject:object];
 }
 
-- (void)ba_postNotificationOnMainThread:(NSNotification *)notification {
+- (void)mt_postNotificationOnMainThread:(NSNotification *)notification {
     [self performSelectorOnMainThread:@selector(postNotification:) withObject:notification waitUntilDone:YES];
 }
 
-- (void)ba_postNotificationOnMainThreadName:(NSString *)aName object:(id)anObject {
+- (void)mt_postNotificationOnMainThreadName:(NSString *)aName object:(id)anObject {
     NSNotification *notification = [NSNotification notificationWithName:aName object:anObject];
-    [self ba_postNotificationOnMainThread:notification];
+    [self mt_postNotificationOnMainThread:notification];
 }
 
-- (void)ba_postNotificationOnMainThreadName:(NSString *)aName object:(id)anObject userInfo:(NSDictionary *)aUserInfo {
+- (void)mt_postNotificationOnMainThreadName:(NSString *)aName object:(id)anObject userInfo:(NSDictionary *)aUserInfo {
     NSNotification *notification = [NSNotification notificationWithName:aName object:anObject userInfo:aUserInfo];
-    [self ba_postNotificationOnMainThread:notification];
+    [self mt_postNotificationOnMainThread:notification];
 }
 
 @end

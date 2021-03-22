@@ -14,7 +14,7 @@
     
     unsigned int m = ((b-a) * 1000.0f); // convert from seconds to milliseconds
     
-    ba_log(@"%@: %d ms", tag ? @"" : @"Time taken", m);
+    mt_log(@"%@: %d ms", tag ? @"" : @"Time taken", m);
 }
 
 @end

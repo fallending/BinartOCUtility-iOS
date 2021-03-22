@@ -53,7 +53,7 @@
 
 static void *const __KVOBlockKey = "KVOBlockKey";
 
-- (void)ba_observe:(NSString*)keyPath block:(void (^)(id obj, id oldVal, id newVal))block {
+- (void)mt_observe:(NSString*)keyPath block:(void (^)(id obj, id oldVal, id newVal))block {
     if (!keyPath || !block) return;
     //取出存有所有KVOTarget的字典
     NSMutableDictionary *allTargets = objc_getAssociatedObject(self, __KVOBlockKey);

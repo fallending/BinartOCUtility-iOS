@@ -3,19 +3,19 @@
 @interface NSNumber ( BAUtil )
 
 /// 展示
-- (NSString *)ba_toDisplayNumberWithDigit:(NSInteger)digit;
-- (NSString *)ba_toDisplayPercentageWithDigit:(NSInteger)digit;
+- (NSString *)mt_toDisplayNumberWithDigit:(NSInteger)digit;
+- (NSString *)mt_toDisplayPercentageWithDigit:(NSInteger)digit;
 
 /// 四舍五入
-- (NSNumber *)ba_doRoundWithDigit:(NSUInteger)digit;
+- (NSNumber *)mt_doRoundWithDigit:(NSUInteger)digit;
 
 /// 取上整
-- (NSNumber *)ba_doCeilWithDigit:(NSUInteger)digit;
+- (NSNumber *)mt_doCeilWithDigit:(NSUInteger)digit;
 
 /// 取下整
-- (NSNumber *)ba_doFloorWithDigit:(NSUInteger)digit;
+- (NSNumber *)mt_doFloorWithDigit:(NSUInteger)digit;
     
 /// 循环执行
-- (void)ba_times:(void (^)(void))block;
+- (void)mt_times:(void (^)(void))block;
 
 @end

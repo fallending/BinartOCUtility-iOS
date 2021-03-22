@@ -2,89 +2,89 @@
 
 @interface NSString ( BAUtil )
 
-- (BOOL)ba_startsWith:(NSString *)prefix;
-- (BOOL)ba_endsWith:(NSString *)suffix;
+- (BOOL)mt_startsWith:(NSString *)prefix;
+- (BOOL)mt_endsWith:(NSString *)suffix;
 
-- (BOOL)ba_contains:(NSString *)str;
-- (BOOL)ba_contains:(NSString *)str options:(NSStringCompareOptions)option;
+- (BOOL)mt_contains:(NSString *)str;
+- (BOOL)mt_contains:(NSString *)str options:(NSStringCompareOptions)option;
 
-- (NSArray *)ba_split:(NSString *)separator;
-- (NSString *)ba_append:(NSString *)str;
+- (NSArray *)mt_split:(NSString *)separator;
+- (NSString *)mt_append:(NSString *)str;
 
-- (BOOL)ba_empty;
-- (BOOL)ba_notEmpty;
+- (BOOL)mt_empty;
+- (BOOL)mt_notEmpty;
 
-- (BOOL)ba_is:(NSString *)other;
-- (BOOL)ba_isNot:(NSString *)other;
+- (BOOL)mt_is:(NSString *)other;
+- (BOOL)mt_isNot:(NSString *)other;
 
-- (NSString *)ba_trim;
-- (NSString *)ba_trimBy:(NSString *)str;
-- (NSString *)ba_trimFloatPointNumber; // 去掉浮点数尾部的'0'和'.' 如：1.00 ==> 1, 0.00 ==> 0, 0.50 ==> 0.5
-- (NSString *)ba_trimmingWhitespace; // 去除空格
-- (NSString *)ba_trimmingWhitespaceAndNewlines; // 去除字符串与空行
-+ (NSString *)ba_trimmingWhitespaceAndChangLineWithChangN:(NSString*)str;
-- (NSString *)ba_trimmingLeadingWhitespace; // 去掉NSString前面的空格
-- (NSString *)ba_trimmingLeadingAndTrailingWhitespace; // 去掉NSString前面和后面的空格
+- (NSString *)mt_trim;
+- (NSString *)mt_trimBy:(NSString *)str;
+- (NSString *)mt_trimFloatPointNumber; // 去掉浮点数尾部的'0'和'.' 如：1.00 ==> 1, 0.00 ==> 0, 0.50 ==> 0.5
+- (NSString *)mt_trimmingWhitespace; // 去除空格
+- (NSString *)mt_trimmingWhitespaceAndNewlines; // 去除字符串与空行
++ (NSString *)mt_trimmingWhitespaceAndChangLineWithChangN:(NSString*)str;
+- (NSString *)mt_trimmingLeadingWhitespace; // 去掉NSString前面的空格
+- (NSString *)mt_trimmingLeadingAndTrailingWhitespace; // 去掉NSString前面和后面的空格
 
-+ (NSString *)ba_random; // count = 8
-+ (NSString *)ba_random:(int)count;
++ (NSString *)mt_random; // count = 8
++ (NSString *)mt_random:(int)count;
 
-- (NSString *)ba_base64EncodedString:(NSStringEncoding)encoding;
-- (NSString *)ba_base64DecodedString:(NSStringEncoding)encoding;
+- (NSString *)mt_base64EncodedString:(NSStringEncoding)encoding;
+- (NSString *)mt_base64DecodedString:(NSStringEncoding)encoding;
 
-- (NSData *)ba_toData;
-- (NSString *)ba_MD5String;
+- (NSData *)mt_toData;
+- (NSString *)mt_MD5String;
 
-- (NSString *)ba_unwrap;
-- (NSString *)ba_normalize;
+- (NSString *)mt_unwrap;
+- (NSString *)mt_normalize;
 
-- (NSString *)ba_repeat:(NSUInteger)count;
+- (NSString *)mt_repeat:(NSUInteger)count;
 
-- (BOOL)ba_match:(NSString *)expression;
-- (BOOL)ba_matchAnyOf:(NSArray *)array;
-- (NSString *)ba_matchGroupAtIndex:(NSUInteger)idx forRegex:(NSString *)regex;
-- (NSArray *)ba_allMatchesForRegex:(NSString *)regex;
-- (NSString *)ba_stringByReplacingMatchesForRegex:(NSString *)regex withString:(NSString *)replacement;
-- (NSString *)ba_stringByRegex:(NSString*)pattern substitution:(NSString*)substitute;
+- (BOOL)mt_match:(NSString *)expression;
+- (BOOL)mt_matchAnyOf:(NSArray *)array;
+- (NSString *)mt_matchGroupAtIndex:(NSUInteger)idx forRegex:(NSString *)regex;
+- (NSArray *)mt_allMatchesForRegex:(NSString *)regex;
+- (NSString *)mt_stringByReplacingMatchesForRegex:(NSString *)regex withString:(NSString *)replacement;
+- (NSString *)mt_stringByRegex:(NSString*)pattern substitution:(NSString*)substitute;
 
 /**  Return the char value at the specified index. */
-- (unichar)ba_charAt:(int)index;
-- (int)ba_indexOfChar:(unichar)ch;
-- (int)ba_indexOfChar:(unichar)ch fromIndex:(int)index;
-- (int)ba_indexOfString:(NSString *)str;
-- (int)ba_indexOfString:(NSString *)str fromIndex:(int)index;
-- (int)ba_lastIndexOfChar:(unichar)ch;
-- (int)ba_lastIndexOfChar:(unichar)ch fromIndex:(int)index;
-- (int)ba_lastIndexOfString:(NSString *)str;
-- (int)ba_lastIndexOfString:(NSString *)str fromIndex:(int)index;
+- (unichar)mt_charAt:(int)index;
+- (int)mt_indexOfChar:(unichar)ch;
+- (int)mt_indexOfChar:(unichar)ch fromIndex:(int)index;
+- (int)mt_indexOfString:(NSString *)str;
+- (int)mt_indexOfString:(NSString *)str fromIndex:(int)index;
+- (int)mt_lastIndexOfChar:(unichar)ch;
+- (int)mt_lastIndexOfChar:(unichar)ch fromIndex:(int)index;
+- (int)mt_lastIndexOfString:(NSString *)str;
+- (int)mt_lastIndexOfString:(NSString *)str fromIndex:(int)index;
 
-- (NSString *)ba_toLowerCase;
-- (NSString *)ba_toUpperCase;
+- (NSString *)mt_toLowerCase;
+- (NSString *)mt_toUpperCase;
 
-- (NSString *)ba_replaceAll:(NSString *)origin with:(NSString *)replacement;
-+ (NSString *)ba_reverseString:(NSString *)strSrc; // 反转字符串
+- (NSString *)mt_replaceAll:(NSString *)origin with:(NSString *)replacement;
++ (NSString *)mt_reverseString:(NSString *)strSrc; // 反转字符串
 
-- (BOOL)ba_equalsIgnoreCase:(NSString *)anotherString;
+- (BOOL)mt_equalsIgnoreCase:(NSString *)anotherString;
 
-- (NSComparisonResult)ba_compareTo:(NSString *)anotherString;
-- (NSComparisonResult)ba_compareToIgnoreCase:(NSString *)str;
+- (NSComparisonResult)mt_compareTo:(NSString *)anotherString;
+- (NSComparisonResult)mt_compareToIgnoreCase:(NSString *)str;
 
-- (BOOL)ba_isValueOf:(NSArray *)array;
-- (BOOL)ba_isValueOf:(NSArray *)array caseInsens:(BOOL)caseInsens;
+- (BOOL)mt_isValueOf:(NSArray *)array;
+- (BOOL)mt_isValueOf:(NSArray *)array caseInsens:(BOOL)caseInsens;
 
-- (NSString *)ba_substringFromIndex:(NSUInteger)from untilString:(NSString *)string;
-- (NSString *)ba_substringFromIndex:(NSUInteger)from untilString:(NSString *)string endOffset:(NSUInteger *)endOffset;
+- (NSString *)mt_substringFromIndex:(NSUInteger)from untilString:(NSString *)string;
+- (NSString *)mt_substringFromIndex:(NSUInteger)from untilString:(NSString *)string endOffset:(NSUInteger *)endOffset;
 
-- (NSString *)ba_substringFromIndex:(NSUInteger)from untilCharset:(NSCharacterSet *)charset;
-- (NSString *)ba_substringFromIndex:(NSUInteger)from untilCharset:(NSCharacterSet *)charset endOffset:(NSUInteger *)endOffset;
+- (NSString *)mt_substringFromIndex:(NSUInteger)from untilCharset:(NSCharacterSet *)charset;
+- (NSString *)mt_substringFromIndex:(NSUInteger)from untilCharset:(NSCharacterSet *)charset endOffset:(NSUInteger *)endOffset;
 
-- (NSString *)ba_substringFromIndex:(int)beginIndex toIndex:(int)endIndex;
+- (NSString *)mt_substringFromIndex:(int)beginIndex toIndex:(int)endIndex;
 
-- (NSUInteger)ba_countFromIndex:(NSUInteger)from inCharset:(NSCharacterSet *)charset;
+- (NSUInteger)mt_countFromIndex:(NSUInteger)from inCharset:(NSCharacterSet *)charset;
 
-- (NSArray<NSString *> *)ba_rangeStringsOfSubString:(NSString *)subString;
+- (NSArray<NSString *> *)mt_rangeStringsOfSubString:(NSString *)subString;
 
-+ (NSString *)ba_randomLength:(NSUInteger)len;
++ (NSString *)mt_randomLength:(NSUInteger)len;
 
 @end
 

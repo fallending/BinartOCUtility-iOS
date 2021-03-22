@@ -1,8 +1,8 @@
 // 元宏定义用小写
 // 普通宏定义用大写
 
-#ifndef __BA_MACROS_H__
-#define __BA_MACROS_H__
+#ifndef __MT_MACROS_H__
+#define __MT_MACROS_H__
 
 // ----------------------------------
 // Common headers
@@ -188,54 +188,54 @@
 
 // 调试代码块
 #ifdef DEBUG
-#define ba_log( s, ... )                   fprintf(stderr,"%s, %d, %s\n", [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], __LINE__, [[NSString stringWithFormat:(s), ##__VA_ARGS__] UTF8String]);
+#define mt_log( s, ... )                   fprintf(stderr,"%s, %d, %s\n", [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String], __LINE__, [[NSString stringWithFormat:(s), ##__VA_ARGS__] UTF8String]);
 #else
-#define ba_log( s, ... )
+#define mt_log( s, ... )
 #endif
 
 // 大小
-#undef  ba_max3
-#define MAX3(a, b, c)                   ((a) > (b) ? ((a) > (c) ? (a) : (c)) : ((b) > (c) ? (b) : (c)))
+#undef  mt_max3
+#define mt_max3(a, b, c)                   ((a) > (b) ? ((a) > (c) ? (a) : (c)) : ((b) > (c) ? (b) : (c)))
 
-#undef  ba_min3
-#define MIN3(a, b, c)                   ((a) < (b) ? ((a) < (c) ? (a) : (c)) : ((b) < (c) ? (b) : (c)))
+#undef  mt_min3
+#define mt_min3(a, b, c)                   ((a) < (b) ? ((a) < (c) ? (a) : (c)) : ((b) < (c) ? (b) : (c)))
 
 // 判断某个方法是否覆写
-#undef  IS_METHOD_OVERRIDED
-#define IS_METHOD_OVERRIDED( sc , c , m ) [sc instanceMethodForSelector:@selector(m)] != [c instanceMethodForSelector:@selector(m)]
+#undef  mt_method_override
+#define mt_method_override( sc , c , m ) [sc instanceMethodForSelector:@selector(m)] != [c instanceMethodForSelector:@selector(m)]
 
 // 判断某个方法是否实现
-#undef  IS_METHOD_IMPLEMENTED
-#define IS_METHOD_IMPLEMENTED( o, m )   ([o respondsToSelector:@selector(m)])
+#undef  mt_method_impl
+#define mt_method_impl( o, m )   ([o respondsToSelector:@selector(m)])
 
 // 判断某个协议是否被实现
-#undef  IS_PROTOCOL_IMPLEMENTED
-#define IS_PROTOCOL_IMPLEMENTED( o, p ) [o conformsToProtocol:@protocol(p)]
+#undef  mt_prot_impl
+#define mt_prot_impl( o, p ) [o conformsToProtocol:@protocol(p)]
 
-#undef  ba_returnif
-#define ba_returnif( expr )                     if (expr) { return; }
+#undef  mt_returnif
+#define mt_returnif( expr )                     if (expr) { return; }
 
-#undef  ba_invokeblock
-#define ba_invokeblock( block, ... )            { if (block) block(__VA_ARGS__); }
+#undef  mt_invokeblock
+#define mt_invokeblock( block, ... )            { if (block) block(__VA_ARGS__); }
 
-#undef  ba_selectorify
-#define ba_selectorify( c )                     NSSelectorFromString( @#c )
+#undef  mt_selectorify
+#define mt_selectorify( c )                     NSSelectorFromString( @#c )
 
-#undef  ba_keypathify
-#define ba_keypathify( keypath )                NSStringFromSelector(@selector(keypath))
+#undef  mt_keypathify
+#define mt_keypathify( keypath )                NSStringFromSelector(@selector(keypath))
 
-#define ba_take_nonull( ... )                   macro_concat(ba_take_nonull_, macro_count(__VA_ARGS__))( __VA_ARGS__ );
-#define ba_take_nonull_0( ... )
-#define ba_take_nonull_1( a )                   ( a )
-#define ba_take_nonull_2( a, b )                ( a ? a : b )
-#define ba_take_nonull_3( a, b, c )             ba_take_nonull_2( ba_take_nonull_2(a, b), c)
+#define mt_take_nonull( ... )                   macro_concat(mt_take_nonull_, macro_count(__VA_ARGS__))( __VA_ARGS__ );
+#define mt_take_nonull_0( ... )
+#define mt_take_nonull_1( a )                   ( a )
+#define mt_take_nonull_2( a, b )                ( a ? a : b )
+#define mt_take_nonull_3( a, b, c )             mt_take_nonull_2( mt_take_nonull_2(a, b), c)
 
 #undef  TIMEOUT
 #define TIMEOUT(timeout, block) \
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(timeout * NSEC_PER_SEC)), dispatch_get_main_queue(), block);
 
-#undef  ba_exec_once
-#define ba_exec_once( _block_ ) \
+#undef  mt_exec_once
+#define mt_exec_once( _block_ ) \
         { \
             static dispatch_once_t predicate; \
             dispatch_once(&predicate, _block_); \
@@ -273,14 +273,14 @@
 // Inline functions
 // ----------------------------------
 
-static inline BOOL BA_IS_NULL(id _Nullable thing) {
+static inline BOOL mt_is_null(id _Nullable thing) {
     return thing == nil ||
     ([thing isEqual:[NSNull null]]) ||
     ([thing isKindOfClass:[NSNull class]]);
 }
 
 
-static inline BOOL BA_IS_EMPTY(id _Nonnull thing) {
+static inline BOOL mt_is_empty(id _Nonnull thing) {
     return thing == nil ||
     ([thing isEqual:[NSNull null]]) ||
     ([thing isKindOfClass:[NSNull class]]) ||
@@ -288,12 +288,12 @@ static inline BOOL BA_IS_EMPTY(id _Nonnull thing) {
     ([thing respondsToSelector:@selector(count)]  && [(NSArray *)thing count] == 0);
 }
 
-static inline BOOL BA_NOT_EMPTY(id _Nonnull thing) {
-    return !BA_IS_EMPTY(thing);
+static inline BOOL mt_not_empty(id _Nonnull thing) {
+    return !mt_is_empty(thing);
 }
 
-static inline size_t BA_LEN(id _Nonnull thing) {
-    if (BA_IS_EMPTY(thing)) return 0;
+static inline size_t mt_len(id _Nonnull thing) {
+    if (mt_is_empty(thing)) return 0;
     
     if ([thing respondsToSelector:@selector(length)]) {
         return (size_t)[thing performSelector:@selector(length)];
@@ -304,7 +304,7 @@ static inline size_t BA_LEN(id _Nonnull thing) {
     }
     
     if ([thing respondsToSelector:@selector(allKeys)]) {
-        return BA_LEN([thing performSelector:@selector(allKeys)]);
+        return mt_len([thing performSelector:@selector(allKeys)]);
     }
     
     return 0;
@@ -316,7 +316,7 @@ static inline size_t BA_LEN(id _Nonnull thing) {
 
 // System Versioning
 
-#define SYS_VER                                 [UIDevice currentDevice].systemVersion
+#define mt_sysver                                 [UIDevice currentDevice].systemVersion
 #define SYS_VER_EQ( v )                         ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
 
 #define SYS_VER_GT( v )                         ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
@@ -459,4 +459,4 @@ typedef enum {
     BAHttpMethodDelete = 2
 } _HttpMethodType;
 
-#endif // __BA_MACROS_H__
+#endif // __MT_MACROS_H__

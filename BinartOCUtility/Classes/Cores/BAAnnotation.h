@@ -34,11 +34,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BAAnnotation : NSObject
 
-+ (NSArray <NSString *> *)ba_annotationObjects; // Objects at section ##ANNOTATION_SECTIONNAME
-+ (NSArray <NSString *> *)ba_annotationBindings; // Bindings at section ##ANNOTATION_SECTIONNAME
++ (NSArray <NSString *> *)mt_annotationObjects; // Objects at section ##ANNOTATION_SECTIONNAME
++ (NSArray <NSString *> *)mt_annotationBindings; // Bindings at section ##ANNOTATION_SECTIONNAME
 
-+ (NSArray <NSString *> *)ba_annotationObjectsForSectioname:(NSString *)sectioname;
-+ (NSArray <NSString *> *)ba_annotationBindingsForSectioname:(NSString *)sectioname;
++ (NSArray <NSString *> *)mt_annotationObjectsForSectioname:(NSString *)sectioname;
++ (NSArray <NSString *> *)mt_annotationBindingsForSectioname:(NSString *)sectioname;
 
 @end
 

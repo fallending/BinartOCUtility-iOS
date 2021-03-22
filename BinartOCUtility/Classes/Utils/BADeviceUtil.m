@@ -568,7 +568,7 @@ NSString * const UIDevicePasscodeKeychainAccount = @"UIDevice-PasscodeStatus_Key
     
     if([self uuidValueIsValid:uuidValue] && ![_uuidForDevice isEqualToString:uuidValue]) {
 //        exceptioning(@"Cannot overwrite uuidForDevice, uuidForDevice has already been created and cannot be overwritten.")
-        ba_log(@"出大事儿啦！出错啦！")
+        mt_log(@"出大事儿啦！出错啦！")
     }
     
     if(![uuidForDeviceInMemory isEqualToString:_uuidForDevice]) {
@@ -622,7 +622,7 @@ NSString * const UIDevicePasscodeKeychainAccount = @"UIDevice-PasscodeStatus_Key
         NSString *urlStr = [[NSString alloc] initWithFormat:@"telprompt://%@", phoneNumberString];
         BOOL isSuccess = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlStr]];
         if (!isSuccess) {
-            ba_log(@"拨打电话失败:%@", urlStr);
+            mt_log(@"拨打电话失败:%@", urlStr);
             
             return NO;
         }

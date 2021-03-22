@@ -17,19 +17,19 @@ typedef void (^ __handlerBlockType )( id object );
 @implementation NSObject ( BlockHandler )
 
 - (_Handler *)blockHandlerOrCreate {
-    _Handler * handler = [self ba_getAssociatedObjectForKey:"blockHandler"];
+    _Handler * handler = [self mt_getAssociatedObjectForKey:"blockHandler"];
     
     if ( nil == handler ) {
         handler = [[_Handler alloc] init];
         
-        [self ba_retainAssociatedObject:handler forKey:"blockHandler"];
+        [self mt_retainAssociatedObject:handler forKey:"blockHandler"];
     }
     
     return handler;
 }
 
 - (_Handler *)blockHandler {
-    return [self ba_getAssociatedObjectForKey:"blockHandler"];
+    return [self mt_getAssociatedObjectForKey:"blockHandler"];
 }
 
 - (void)addBlock:(id)block forName:(NSString *)name {
@@ -55,7 +55,7 @@ typedef void (^ __handlerBlockType )( id object );
         [handler removeAllHandlers];
     }
     
-    [self ba_removeAssociatedObjectForKey:"blockHandler"];
+    [self mt_removeAssociatedObjectForKey:"blockHandler"];
 }
 
 @end

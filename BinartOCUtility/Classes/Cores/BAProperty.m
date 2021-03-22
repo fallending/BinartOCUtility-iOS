@@ -4,7 +4,7 @@
 
 @implementation NSObject ( Property )
 
-+ (const char *)ba_attributesForProperty:(NSString *)property {
++ (const char *)mt_attributesForProperty:(NSString *)property {
     Class baseClass = [NSObject class];
     
     for ( Class clazzType = self; clazzType != baseClass; ) {
@@ -21,11 +21,11 @@
     return NULL;
 }
 
-- (const char *)ba_attributesForProperty:(NSString *)property {
-    return [[self class] ba_attributesForProperty:property];
+- (const char *)mt_attributesForProperty:(NSString *)property {
+    return [[self class] mt_attributesForProperty:property];
 }
 
-+ (NSDictionary *)ba_extentionForProperty:(NSString *)property {
++ (NSDictionary *)mt_extentionForProperty:(NSString *)property {
     SEL fieldSelector = NSSelectorFromString( [NSString stringWithFormat:@"property_%@", property] );
     if ( [self respondsToSelector:fieldSelector] ) {
         __autoreleasing NSString * field = nil;
@@ -59,24 +59,24 @@
     return nil;
 }
 
-- (NSDictionary *)ba_extentionForProperty:(NSString *)property {
-    return [[self class] ba_extentionForProperty:property];
+- (NSDictionary *)mt_extentionForProperty:(NSString *)property {
+    return [[self class] mt_extentionForProperty:property];
 }
 
-+ (NSString *)ba_extentionForProperty:(NSString *)property stringValueWithKey:(NSString *)key {
-    NSDictionary * extension = [self ba_extentionForProperty:property];
++ (NSString *)mt_extentionForProperty:(NSString *)property stringValueWithKey:(NSString *)key {
+    NSDictionary * extension = [self mt_extentionForProperty:property];
     if ( nil == extension )
         return nil;
     
     return [extension objectForKey:key];
 }
 
-- (NSString *)ba_extentionForProperty:(NSString *)property stringValueWithKey:(NSString *)key {
-    return [[self class] ba_extentionForProperty:property stringValueWithKey:key];
+- (NSString *)mt_extentionForProperty:(NSString *)property stringValueWithKey:(NSString *)key {
+    return [[self class] mt_extentionForProperty:property stringValueWithKey:key];
 }
 
-+ (NSArray *)ba_extentionForProperty:(NSString *)property arrayValueWithKey:(NSString *)key {
-    NSDictionary * extension = [self ba_extentionForProperty:property];
++ (NSArray *)mt_extentionForProperty:(NSString *)property arrayValueWithKey:(NSString *)key {
+    NSDictionary * extension = [self mt_extentionForProperty:property];
     if ( nil == extension )
         return nil;
     
@@ -87,24 +87,24 @@
     return [value componentsSeparatedByString:@"|"];
 }
 
-- (NSArray *)ba_extentionForProperty:(NSString *)property arrayValueWithKey:(NSString *)key {
-    return [[self class] ba_extentionForProperty:property arrayValueWithKey:key];
+- (NSArray *)mt_extentionForProperty:(NSString *)property arrayValueWithKey:(NSString *)key {
+    return [[self class] mt_extentionForProperty:property arrayValueWithKey:key];
 }
 
-- (BOOL)ba_hasAssociatedObjectForKey:(const char *)key {
+- (BOOL)mt_hasAssociatedObjectForKey:(const char *)key {
     const char * propName = key;
     id currValue = objc_getAssociatedObject( self, propName );
     return currValue != nil;
 }
 
-- (id)ba_getAssociatedObjectForKey:(const char *)key {
+- (id)mt_getAssociatedObjectForKey:(const char *)key {
     const char * propName = key;
     
     id currValue = objc_getAssociatedObject( self, propName );
     return currValue;
 }
 
-- (id)ba_copyAssociatedObject:(id)obj forKey:(const char *)key {
+- (id)mt_copyAssociatedObject:(id)obj forKey:(const char *)key {
     const char * propName = key;
     
     id oldValue = objc_getAssociatedObject( self, propName );
@@ -112,14 +112,14 @@
     return oldValue;
 }
 
-- (id)ba_retainAssociatedObject:(id)obj forKey:(const char *)key; {
+- (id)mt_retainAssociatedObject:(id)obj forKey:(const char *)key; {
     const char * propName = key;
     id oldValue = objc_getAssociatedObject( self, propName );
     objc_setAssociatedObject( self, propName, obj, OBJC_ASSOCIATION_RETAIN_NONATOMIC );
     return oldValue;
 }
 
-- (id)ba_assignAssociatedObject:(id)obj forKey:(const char *)key {
+- (id)mt_assignAssociatedObject:(id)obj forKey:(const char *)key {
     const char * propName = key;
     
     id oldValue = objc_getAssociatedObject( self, propName );
@@ -127,17 +127,17 @@
     return oldValue;
 }
 
-- (void)ba_weaklyAssociateObject:(id)obj forKey:(const char *)key {
+- (void)mt_weaklyAssociateObject:(id)obj forKey:(const char *)key {
     objc_setAssociatedObject(self, key, obj, OBJC_ASSOCIATION_ASSIGN);
 }
 
-- (void)ba_removeAssociatedObjectForKey:(const char *)key {
+- (void)mt_removeAssociatedObjectForKey:(const char *)key {
     const char * propName = key;
     
     objc_setAssociatedObject( self, propName, nil, OBJC_ASSOCIATION_ASSIGN );
 }
 
-- (void)ba_removeAllAssociatedObjects {
+- (void)mt_removeAllAssociatedObjects {
     objc_removeAssociatedObjects( self );
 }
 

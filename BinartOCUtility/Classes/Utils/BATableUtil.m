@@ -13,7 +13,7 @@
     }
 }
 
-- (void)ba_each:(void (^)(id key, id obj))block {
+- (void)mt_each:(void (^)(id key, id obj))block {
     NSParameterAssert(block != nil);
 
     [self enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
@@ -21,7 +21,7 @@
     }];
 }
 
-- (id)ba_match:(BOOL (^)(id key, id obj))block {
+- (id)mt_match:(BOOL (^)(id key, id obj))block {
     NSParameterAssert(block != nil);
 
     __block id match = nil;
@@ -34,12 +34,12 @@
     return match;
 }
 
-- (NSMapTable *)ba_select:(BOOL (^)(id key, id obj))block {
+- (NSMapTable *)mt_select:(BOOL (^)(id key, id obj))block {
     NSParameterAssert(block != nil);
 
     NSMapTable *result = [[NSMapTable alloc] initWithKeyPointerFunctions:self.keyPointerFunctions valuePointerFunctions:self.valuePointerFunctions capacity:self.count];
 
-    [self ba_each:^(id key, id obj) {
+    [self mt_each:^(id key, id obj) {
         if(block(key, obj)) {
             [result setObject:obj forKey:key];
         }
@@ -48,18 +48,18 @@
     return result;
 }
 
-- (NSMapTable *)ba_reject:(BOOL (^)(id key, id obj))block {
-    return [self ba_select:^BOOL(id key, id obj) {
+- (NSMapTable *)mt_reject:(BOOL (^)(id key, id obj))block {
+    return [self mt_select:^BOOL(id key, id obj) {
         return !block(key, obj);
     }];
 }
 
-- (NSMapTable *)ba_map:(id (^)(id key, id obj))block {
+- (NSMapTable *)mt_map:(id (^)(id key, id obj))block {
     NSParameterAssert(block != nil);
 
     NSMapTable *result = [[NSMapTable alloc] initWithKeyPointerFunctions:self.keyPointerFunctions valuePointerFunctions:self.valuePointerFunctions capacity:self.count];
 
-    [self ba_each:^(id key, id obj) {
+    [self mt_each:^(id key, id obj) {
         id value = block(key, obj);
         if (!value)
             value = [NSNull null];
@@ -70,15 +70,15 @@
     return result;
 }
 
-- (BOOL)ba_any:(BOOL (^)(id key, id obj))block {
-    return [self ba_match:block] != nil;
+- (BOOL)mt_any:(BOOL (^)(id key, id obj))block {
+    return [self mt_match:block] != nil;
 }
 
-- (BOOL)ba_none:(BOOL (^)(id key, id obj))block {
-    return [self ba_match:block] == nil;
+- (BOOL)mt_none:(BOOL (^)(id key, id obj))block {
+    return [self mt_match:block] == nil;
 }
 
-- (BOOL)ba_all:(BOOL (^)(id key, id obj))block {
+- (BOOL)mt_all:(BOOL (^)(id key, id obj))block {
     NSParameterAssert(block != nil);
 
     __block BOOL result = YES;

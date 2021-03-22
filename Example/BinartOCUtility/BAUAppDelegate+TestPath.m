@@ -36,11 +36,11 @@
 @implementation BAUAppDelegate (TestPath)
 
 - (void)testPath {
-    ba_log(@"qiniu image path = %@", [self makeImageQiniuPath:10091 imageSize:CGSizeMake(1024, 648)])
-    ba_log(@"qiniu gif image path = %@", [self makeGifImageQiniuPath:10091 imageSize:CGSizeMake(1024, 648)])
-    ba_log(@"qiniu voice path = %@", [self makeVoiceQiniuPath:10091])
-    ba_log(@"qiniu avatar image path = %@", [self makeAvatarImageQiniuPath:10091 imageSize:CGSizeMake(1024, 648)])
-    ba_log(@"qiniu custom image path = %@", [self makeCustomImageQiniuPath:10091 customPath:@"custom" imageSize:CGSizeMake(1024, 648)])
+    mt_log(@"qiniu image path = %@", [self makeImageQiniuPath:10091 imageSize:CGSizeMake(1024, 648)])
+    mt_log(@"qiniu gif image path = %@", [self makeGifImageQiniuPath:10091 imageSize:CGSizeMake(1024, 648)])
+    mt_log(@"qiniu voice path = %@", [self makeVoiceQiniuPath:10091])
+    mt_log(@"qiniu avatar image path = %@", [self makeAvatarImageQiniuPath:10091 imageSize:CGSizeMake(1024, 648)])
+    mt_log(@"qiniu custom image path = %@", [self makeCustomImageQiniuPath:10091 customPath:@"custom" imageSize:CGSizeMake(1024, 648)])
 }
 
 -(NSString *)makeImageQiniuPath:(int64_t)uid imageSize:(CGSize)size {

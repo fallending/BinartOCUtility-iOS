@@ -207,7 +207,7 @@ static const NSString *path_service = nil;
 #pragma mark - Construct
 
 + (NSString *)flexiableWithBasePath:(NSString *)path {
-    if ([path_service ba_empty]) {
+    if ([path_service mt_empty]) {
         return path;
     } else {
         return [path stringByAppendingPathComponent:(NSString *)path_service];
