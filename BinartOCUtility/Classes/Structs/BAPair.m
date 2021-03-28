@@ -6,7 +6,7 @@
 
 @implementation BAPair
 
-+ (instancetype)with:(id)first second:(id)second  {
++ (instancetype)with:(id)first and:(id)second  {
     return [[self new] with:first second:second];
 }
 
@@ -18,7 +18,7 @@
     return self;
 }
 
-- (instancetype)with:(id)first second:(id)second {
+- (instancetype)with:(id)first and:(id)second {
     self.first = nil;
     self.second = nil;
     
@@ -40,11 +40,11 @@
 }
 
 - (id)copy {
-    return [BAPair with:_first second:_second];
+    return [BAPair with:_first and:_second];
 }
 
 - (id)mutableCopy {
-    return [BAPair with:[_first copy] second:[_second copy]];
+    return [BAPair with:[_first copy] and:[_second copy]];
 }
 
 - (NSString *)description {

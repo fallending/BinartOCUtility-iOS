@@ -7,12 +7,19 @@ typedef NSComparisonResult    (^NSArrayCompareBlock)(id left, id right );
 
 @interface NSArray ( BAUtil )
 
+/// 第一个元素
 - (id)mt_first;
+
+/// 最后一个元素
 - (id)mt_last;
 
+/// 前count个元素
 - (NSArray *)mt_head:(NSUInteger)count;
+
+/// 后count个元素
 - (NSArray *)mt_tail:(NSUInteger)count;
 
+/// 第index个元素
 - (id)mt_atIndex:(NSUInteger)index;
 
 - (id)mt_subWithRange:(NSRange)range;
@@ -43,17 +50,13 @@ typedef NSComparisonResult    (^NSArrayCompareBlock)(id left, id right );
 - (NSInteger)mt_reduceInteger:(NSInteger)initial withBlock:(NSInteger(^)(NSInteger result, id obj))block;
 - (CGFloat)mt_reduceFloat:(CGFloat)inital withBlock:(CGFloat(^)(CGFloat result, id obj))block;
 
+/// 是否至少有一个元素满足条件
 - (BOOL)mt_any:(BOOL (^)(id obj))block;
 
-/** Loops through an array to find whether no objects match the block.
- */
+/// 是否没有一个元素满足条件
 - (BOOL)mt_none:(BOOL (^)(id obj))block;
 
-/** Loops through an array to find whether all objects match the block.
- 
- @param block A single-argument, BOOL-returning code block.
- @return YES if the block returns YES for all objects in the array, NO otherwise.
- */
+/// 是否所有元素满足条件
 - (BOOL)mt_all:(BOOL (^)(id obj))block;
 
 /** Tests whether every element of this array relates to the corresponding element of another array according to match by block.

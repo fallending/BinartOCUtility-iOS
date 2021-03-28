@@ -12,7 +12,7 @@
     block();
     double b = CFAbsoluteTimeGetCurrent();
     
-    unsigned int m = ((b-a) * 1000.0f); // convert from seconds to milliseconds
+    __unused unsigned int m = ((b-a) * 1000.0f); // convert from seconds to milliseconds
     
     mt_log(@"%@: %d ms", tag ? @"" : @"Time taken", m);
 }

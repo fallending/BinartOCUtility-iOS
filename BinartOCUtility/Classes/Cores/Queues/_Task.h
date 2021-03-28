@@ -1,8 +1,6 @@
 
 #import <Foundation/Foundation.h>
 
-// from https://github.com/SunilSpaceo/SKTaskManager
-
 @class _Task;
 
 typedef void(^BlockTaskCompletion)(id result);
